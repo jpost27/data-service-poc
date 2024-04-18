@@ -1,0 +1,15 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: data-service-poc
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/sport_data?createDatabaseIfNotExist=false
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
