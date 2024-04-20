@@ -11,7 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JPRepository<Team, FdTeam, QFdTeam, Integer> {
 
     @Override
-    default void customize(QuerydslBindings bindings, QFdTeam root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdTeam root) {}
 }

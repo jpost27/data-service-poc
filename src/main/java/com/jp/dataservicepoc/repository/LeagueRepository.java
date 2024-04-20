@@ -12,9 +12,8 @@ public interface LeagueRepository extends JPRepository<League, FdLeague, QFdLeag
 
     @Override
     default void customize(QuerydslBindings bindings, QFdLeague root) {
-//        bindings.bind(String.class)
-//                .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
-//        bindings.excluding(root.email);
+        //        bindings.bind(String.class)
+        //                .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
+        //        bindings.excluding(root.email);
     }
-
 }

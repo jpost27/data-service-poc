@@ -10,7 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamColorRepository extends JPRepository<TeamColor, FdTeamColor, QFdTeamColor, Integer> {
     @Override
-    default void customize(QuerydslBindings bindings, QFdTeamColor root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdTeamColor root) {}
 }

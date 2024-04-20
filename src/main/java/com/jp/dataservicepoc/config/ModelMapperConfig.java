@@ -12,15 +12,15 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration()
+        modelMapper
+                .getConfiguration()
                 .setPreferNestedProperties(false)
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setPropertyCondition(Conditions.isNotNull())
-//                .setFieldMatchingEnabled(true)
-//                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                //                .setFieldMatchingEnabled(true)
+                //                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
                 .setDeepCopyEnabled(false);
 
         return modelMapper;
     }
-
 }

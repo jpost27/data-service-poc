@@ -11,7 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface SportRepository extends JPRepository<Sport, FdSport, QFdSport, Integer> {
 
     @Override
-    default void customize(QuerydslBindings bindings, QFdSport root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdSport root) {}
 }

@@ -1,12 +1,11 @@
 package com.jp.dataservicepoc.model.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 public class Venue implements Serializable {
@@ -22,6 +21,7 @@ public class Venue implements Serializable {
     private String roofType;
     private BigDecimal latitude;
     private BigDecimal longitude;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Team> teams;

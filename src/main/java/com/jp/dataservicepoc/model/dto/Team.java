@@ -1,15 +1,15 @@
 package com.jp.dataservicepoc.model.dto;
 
+import java.io.Serializable;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Data
 public class Team implements Serializable {
     private Integer teamId;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private League league;
@@ -42,5 +42,4 @@ public class Team implements Serializable {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Competitor> competitors;
-
 }

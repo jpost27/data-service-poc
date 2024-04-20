@@ -8,10 +8,10 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeamSportsbookSelectionIdRepository extends JPRepository<TeamSportsbookSelectionId, FdTeamSportsbookSelectionId, QFdTeamSportsbookSelectionId, Long> {
+public interface TeamSportsbookSelectionIdRepository
+        extends JPRepository<
+                TeamSportsbookSelectionId, FdTeamSportsbookSelectionId, QFdTeamSportsbookSelectionId, Long> {
 
     @Override
-    default void customize(QuerydslBindings bindings, QFdTeamSportsbookSelectionId root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdTeamSportsbookSelectionId root) {}
 }

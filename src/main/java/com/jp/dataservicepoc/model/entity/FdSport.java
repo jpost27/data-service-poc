@@ -7,12 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.io.Serializable;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Entity(name = "sports")
@@ -29,5 +28,4 @@ public class FdSport implements Serializable {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdLeague> fdLeagues;
-
 }

@@ -11,7 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface CompetitorRepository extends JPRepository<Competitor, FdCompetitor, QFdCompetitor, Integer> {
 
     @Override
-    default void customize(QuerydslBindings bindings, QFdCompetitor root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdCompetitor root) {}
 }

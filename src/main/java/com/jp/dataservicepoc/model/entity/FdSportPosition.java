@@ -8,12 +8,11 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
@@ -23,6 +22,7 @@ public class FdSportPosition implements Serializable {
     @Id
     @Column(name = "sport_position_code")
     public String sportPositionCode;
+
     @Id
     @Column(name = "sport_id")
     public Integer sportId;
@@ -36,5 +36,4 @@ public class FdSportPosition implements Serializable {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdSport fdSport;
-
 }

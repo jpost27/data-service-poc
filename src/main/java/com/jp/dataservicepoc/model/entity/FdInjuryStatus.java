@@ -16,5 +16,4 @@ public class FdInjuryStatus {
 
     @Column(name = "description")
     public String description;
-
 }

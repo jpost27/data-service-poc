@@ -19,6 +19,7 @@ public class FdTeamColor {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "team_color_id")
     private Integer teamColorId;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_color_type_code", nullable = false)
     private FdTeamColorType fdTeamColorType;
@@ -43,5 +44,4 @@ public class FdTeamColor {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdTeam fdTeam;
-
 }

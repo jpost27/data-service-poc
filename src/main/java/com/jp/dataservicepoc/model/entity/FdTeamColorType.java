@@ -5,10 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -20,5 +19,4 @@ public class FdTeamColorType {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeamColorType")
     private List<FdTeamColor> fdTeamColors;
-
 }

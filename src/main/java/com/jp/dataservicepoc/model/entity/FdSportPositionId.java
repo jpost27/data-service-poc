@@ -6,5 +6,4 @@ public class FdSportPositionId implements Serializable {
     public String sportPositionCode;
 
     public Integer sportId;
-
 }

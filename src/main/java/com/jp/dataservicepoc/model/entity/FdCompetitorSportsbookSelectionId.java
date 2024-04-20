@@ -13,6 +13,7 @@ public class FdCompetitorSportsbookSelectionId {
     @Id
     @Column(name = "selection_id")
     private Long selectionId;
+
     @ManyToOne
     @JoinColumn(name = "competitor_id", nullable = false)
     private FdCompetitorProviderId fdCompetitorProviderIds;

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.4'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.diffplug.spotless' version '6.21.0'
 }
 
 group = 'com.jp'
@@ -46,6 +47,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+}
+
+spotless {
+    java {
+        ratchetFrom 'origin/main'
+        target '**/src/*/java/**/*.java'
+        importOrder()
+        removeUnusedImports()
+        toggleOffOn()
+        palantirJavaFormat()
+        endWithNewline()
+        custom 'noWildcardImports', {
+            if (it.contains('*;\n')) {
+                throw new Error('No wildcard imports allowed')
+            }
+        }
+    }
 }
 
 tasks.named('test') {

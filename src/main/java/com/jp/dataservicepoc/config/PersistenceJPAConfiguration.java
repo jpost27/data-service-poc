@@ -13,5 +13,4 @@ public class PersistenceJPAConfiguration {
     public PlatformTransactionManager transactionManager() {
         return new JpaTransactionManager();
     }
-
 }

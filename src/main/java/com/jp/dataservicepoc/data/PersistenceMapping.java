@@ -1,10 +1,6 @@
 package com.jp.dataservicepoc.data;
 
-
 import com.jp.dataservicepoc.repository.base.JPRepository;
-import lombok.Getter;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 @Component
 @Getter
@@ -37,31 +35,25 @@ public class PersistenceMapping {
         final Map<Class<?>, JPRepository<?, ?, ?, ?>> entityClassToRepositoryMap = new HashMap<>();
 
         // Map: 'Team' -> FdTeam.class
-        final Map<String, Class<?>> stringToEntityClassMap = findAllClassesUsingClassLoader(ENTITY_PACKAGE)
-                .stream()
+        final Map<String, Class<?>> stringToEntityClassMap = findAllClassesUsingClassLoader(ENTITY_PACKAGE).stream()
                 .filter(clazz -> !clazz.getSimpleName().startsWith("Q" + ENTITY_CLASS_PREFIX))
                 .peek(clazz -> {
                     if (!clazz.getSimpleName().startsWith(ENTITY_CLASS_PREFIX)) {
-                        throw new IllegalArgumentException("Entity classes must start with common prefix: " + ENTITY_CLASS_PREFIX + ". Class " + clazz.getSimpleName() + " breaks this convention.");
+                        throw new IllegalArgumentException(
+                                "Entity classes must start with common prefix: " + ENTITY_CLASS_PREFIX + ". Class "
+                                        + clazz.getSimpleName() + " breaks this convention.");
                     }
                 })
                 .collect(Collectors.toMap(
-                        clazz -> clazz.getSimpleName().substring(ENTITY_CLASS_PREFIX.length()),
-                        Function.identity()
-                ));
-        final Map<String, Class<?>> stringToDtoClassMap = findAllClassesUsingClassLoader(DTO_PACKAGE)
-                .stream()
-                .collect(Collectors.toMap(
-                        Class::getSimpleName,
-                        Function.identity()
-                ));
-        final Map<Class<?>, Class<?>> entityClassToDtoClassMap = stringToDtoClassMap.entrySet()
-                .stream()
+                        clazz -> clazz.getSimpleName().substring(ENTITY_CLASS_PREFIX.length()), Function.identity()));
+        final Map<String, Class<?>> stringToDtoClassMap = findAllClassesUsingClassLoader(DTO_PACKAGE).stream()
+                .collect(Collectors.toMap(Class::getSimpleName, Function.identity()));
+        final Map<Class<?>, Class<?>> entityClassToDtoClassMap = stringToDtoClassMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> Optional.ofNullable(stringToEntityClassMap.get(entry.getKey()))
-                                .orElseThrow(() -> new NoSuchElementException("Could not find matching Entity for DTO: " + entry.getValue().getSimpleName())),
-                        Map.Entry::getValue
-                ));
+                                .orElseThrow(() -> new NoSuchElementException("Could not find matching Entity for DTO: "
+                                        + entry.getValue().getSimpleName())),
+                        Map.Entry::getValue));
 
         repositories.forEach(repository -> {
             String repositoryName = Arrays.stream(repository.getClass().getGenericInterfaces())
@@ -69,18 +61,14 @@ public class PersistenceMapping {
                     .filter(typeName -> typeName.startsWith("com.jp.dataservicepoc.repository"))
                     .findFirst()
                     .orElse(null);
-            String dtoName = repositoryName.substring(repositoryName.lastIndexOf(".") + 1,
-                    repositoryName.lastIndexOf("Repository"));
+            String dtoName = repositoryName.substring(
+                    repositoryName.lastIndexOf(".") + 1, repositoryName.lastIndexOf("Repository"));
             Class<?> entityClass = stringToEntityClassMap.get(dtoName);
             entityClassToRepositoryMap.put(entityClass, repository);
         });
 
-        this.queryStringToEntityClassMap = stringToEntityClassMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        entry -> classNameToQueryString(entry.getKey()),
-                        Map.Entry::getValue
-                ));
+        this.queryStringToEntityClassMap = stringToEntityClassMap.entrySet().stream()
+                .collect(Collectors.toMap(entry -> classNameToQueryString(entry.getKey()), Map.Entry::getValue));
 
         this.stringToEntityClassMap = Collections.unmodifiableMap(stringToEntityClassMap);
         this.entityClassToDtoClassMap = Collections.unmodifiableMap(entityClassToDtoClassMap);
@@ -94,8 +82,7 @@ public class PersistenceMapping {
     }
 
     public Set<Class<?>> findAllClassesUsingClassLoader(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
+        InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(packageName.replaceAll("[.]", "/"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         return reader.lines()
                 .filter(line -> line.endsWith(".class"))
@@ -105,8 +92,7 @@ public class PersistenceMapping {
 
     private Class<?> getClass(String className, String packageName) {
         try {
-            return Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.')));
+            return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf('.')));
         } catch (ClassNotFoundException e) {
             // handle the exception
         }

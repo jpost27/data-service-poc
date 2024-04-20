@@ -8,10 +8,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 @NoRepositoryBean
-public interface JPRepository<D, E, Q extends com.querydsl.core.types.EntityPath<E>, ID> extends
-        ListCrudRepository<E, ID>,
-        PagingAndSortingRepository<E, ID>,
-        JpaRepository<E, ID>,
-        QuerydslPredicateExecutor<E>,
-        QuerydslBinderCustomizer<Q> {
-}
+public interface JPRepository<D, E, Q extends com.querydsl.core.types.EntityPath<E>, ID>
+        extends ListCrudRepository<E, ID>,
+                PagingAndSortingRepository<E, ID>,
+                JpaRepository<E, ID>,
+                QuerydslPredicateExecutor<E>,
+                QuerydslBinderCustomizer<Q> {}

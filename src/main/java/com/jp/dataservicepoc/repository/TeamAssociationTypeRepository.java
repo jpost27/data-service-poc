@@ -8,10 +8,9 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeamAssociationTypeRepository extends JPRepository<TeamAssociationType, FdTeamAssociationType, QFdTeamAssociationType, String> {
+public interface TeamAssociationTypeRepository
+        extends JPRepository<TeamAssociationType, FdTeamAssociationType, QFdTeamAssociationType, String> {
 
     @Override
-    default void customize(QuerydslBindings bindings, QFdTeamAssociationType root) {
-
-    }
+    default void customize(QuerydslBindings bindings, QFdTeamAssociationType root) {}
 }

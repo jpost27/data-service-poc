@@ -1,10 +1,9 @@
 package com.jp.dataservicepoc.model.dto;
 
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 @Data
 public class TeamColor implements Serializable {
@@ -15,8 +14,8 @@ public class TeamColor implements Serializable {
     private Integer rgbRed;
     private Integer rgbGreen;
     private Integer rgbBlue;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Team team;
-
 }

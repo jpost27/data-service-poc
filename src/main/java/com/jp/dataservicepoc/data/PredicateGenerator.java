@@ -1,13 +1,12 @@
 package com.jp.dataservicepoc.data;
 
-import com.jp.dataservicepoc.model.entity.QFdCompetitor;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.StringPath;
 import lombok.RequiredArgsConstructor;
-
-import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @RequiredArgsConstructor
 public class PredicateGenerator<E> {
@@ -37,8 +36,10 @@ public class PredicateGenerator<E> {
     }
 
     public BooleanExpression getPredicate(String key, String stringValue) {
-        PathBuilder entityPath = new PathBuilder<>(entityClass,
-                Character.toLowerCase(entityClass.getSimpleName().charAt(0)) + entityClass.getSimpleName().substring(1));
+        PathBuilder entityPath = new PathBuilder<>(
+                entityClass,
+                Character.toLowerCase(entityClass.getSimpleName().charAt(0))
+                        + entityClass.getSimpleName().substring(1));
 
         if (isNumeric(stringValue)) {
             NumberPath<Integer> path = entityPath.getNumber(key, Integer.class);
@@ -48,6 +49,6 @@ public class PredicateGenerator<E> {
             StringPath path = entityPath.getString(key);
             return path.containsIgnoreCase(stringValue);
         }
-//        return null;
+        //        return null;
     }
 }

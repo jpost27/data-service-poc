@@ -14,6 +14,7 @@ public class FdTeamSportsbookSelectionId {
     @Id
     @Column(name = "selection_id")
     private Long selectionId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
     private FdTeamProviderId fdTeamProviderIds;

@@ -9,5 +9,4 @@ public class DataServicePocApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataServicePocApplication.class, args);
     }
-
 }
