@@ -23,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,14 @@ public class DataRestController {
                 persistenceMapping.entityMetadataFromQueryName(queryName);
         JPRepository<D, E, Q, I> repository = entityMetadata.repository();
 
+        List<String> fetchClauses = params.remove("fetch");
+        FetchTreeGenerator.FetchNode fetchTreeRoot;
+        if (fetchClauses != null) {
+            fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
+        } else {
+            fetchTreeRoot = null;
+        }
+
         Class<?> idClass = Arrays.stream(entityMetadata.entityClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Id.class))
                 .map(Field::getType)
@@ -66,7 +76,7 @@ public class DataRestController {
             entityOptional = repository.findById((I) id);
         }
         return entityOptional
-                .map(entity -> entityDtoMapper.entityToDto(entity, entityMetadata.dtoClass(), params.get("fetch")))
+                .map(entity -> entityDtoMapper.entityToDto(entity, entityMetadata.dtoClass(), fetchTreeRoot))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -76,6 +86,7 @@ public class DataRestController {
     public <D, E, Q extends EntityPath<E>, I> List<D> searchAll(
             @PathVariable(name = "queryName") String queryName,
             @RequestParam(value = "search", required = false) String search,
+            @SortDefault Sort sort,
             @RequestParam MultiValueMap<String, String> params) {
         PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
                 persistenceMapping.entityMetadataFromQueryName(queryName);
@@ -84,10 +95,19 @@ public class DataRestController {
         List<String> fetchClauses = params.remove("fetch");
         Optional<BooleanExpression> predicate = getBooleanExpression(entityMetadata.entityClass(), params, search);
 
+        EntityPathBase<E> qClass = (EntityPathBase<E>) entityMetadata.qRoot();
+        EntityGraph<E> entityGraph = null;
+        FetchTreeGenerator.FetchNode fetchTreeRoot = null;
+        if (fetchClauses != null) {
+            entityGraph = (EntityGraph<E>) entityManager.createEntityGraph(qClass.getType());
+            fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
+            fetchTreeGenerator.applyToEntityGraph(fetchTreeRoot, entityGraph);
+        }
+
         return entityDtoMapper.entitiesToDtos(
-                predicate.map(repository::findAll).orElseGet(repository::findAll),
+                repository.findAll(qClass, entityManager, predicate.orElse(null), sort, entityGraph),
                 entityMetadata.dtoClass(),
-                fetchClauses);
+                fetchTreeRoot);
     }
 
     @SuppressWarnings("unchecked")
@@ -101,11 +121,9 @@ public class DataRestController {
                 persistenceMapping.entityMetadataFromQueryName(queryName);
         JPRepository<D, E, Q, I> repository = entityMetadata.repository();
 
-        params.remove("size");
-        params.remove("sort");
-        params.remove("page");
         List<String> fetchClauses = params.remove("fetch");
         BooleanExpression predicate = getBooleanExpression(entityMetadata.entityClass(), params, searchQuery).orElse(null);
+
         EntityPathBase<E> qClass = (EntityPathBase<E>) entityMetadata.qRoot();
         EntityGraph<E> entityGraph = null;
         FetchTreeGenerator.FetchNode fetchTreeRoot = null;
@@ -114,6 +132,7 @@ public class DataRestController {
             fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
             fetchTreeGenerator.applyToEntityGraph(fetchTreeRoot, entityGraph);
         }
+
         Page<E> entityPage = repository.findAll(qClass, entityManager, predicate, pageable, entityGraph);
         List<D> responseDtos = entityDtoMapper.entitiesToDtos(
                 entityPage.getContent(),
@@ -126,6 +145,9 @@ public class DataRestController {
     private <E> Optional<BooleanExpression> getBooleanExpression(
             Class<E> entityClass, MultiValueMap<String, String> params, String searchQuery) {
         BooleanExpression exp = null;
+        params.remove("size");
+        params.remove("sort");
+        params.remove("page");
         if (searchQuery != null) {
             SearchPredicateBuilder<E> builder = new SearchPredicateBuilder<>(entityClass);
             Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
