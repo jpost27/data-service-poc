@@ -2,6 +2,8 @@ package com.jp.dataservicepoc.data;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.PathType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -36,19 +38,20 @@ public class PredicateGenerator<E> {
     }
 
     public BooleanExpression getPredicate(String key, String stringValue) {
-        PathBuilder entityPath = new PathBuilder<>(
+
+        String[] stringPaths = key.split("\\.");
+
+        PathBuilder<Object> entityPath = new PathBuilder<>(
                 entityClass,
                 Character.toLowerCase(entityClass.getSimpleName().charAt(0))
                         + entityClass.getSimpleName().substring(1));
 
-        if (isNumeric(stringValue)) {
-            NumberPath<Integer> path = entityPath.getNumber(key, Integer.class);
-            int intValue = Integer.parseInt(stringValue);
-            return path.eq(intValue);
-        } else {
-            StringPath path = entityPath.getString(key);
-            return path.containsIgnoreCase(stringValue);
+        for (int index = 0; index < stringPaths.length - 1; index++) {
+            entityPath = entityPath.get(
+                    PersistenceMapping.queryStringToGraphPath(stringPaths[index]));
         }
-        //        return null;
+
+        StringPath path = entityPath.getString(stringPaths[stringPaths.length - 1]);
+        return path.eq(stringValue);
     }
 }
