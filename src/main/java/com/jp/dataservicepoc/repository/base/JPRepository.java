@@ -25,7 +25,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 @NoRepositoryBean
-public interface JPRepository<D, E, Q extends com.querydsl.core.types.EntityPath<E>, ID>
+public interface JPRepository<E, Q extends com.querydsl.core.types.EntityPath<E>, ID>
         extends ListCrudRepository<E, ID>,
                 PagingAndSortingRepository<E, ID>,
                 JpaRepository<E, ID>,

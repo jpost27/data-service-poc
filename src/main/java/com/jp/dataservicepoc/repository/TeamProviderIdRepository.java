@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamProviderIdRepository
-        extends JPRepository<TeamProviderId, FdTeamProviderId, QFdTeamProviderId, Integer> {
+        extends JPRepository<FdTeamProviderId, QFdTeamProviderId, Integer> {
 
     Optional<FdTeamProviderId> findByFanduelTeamId(Integer fanduelTeamId);
 

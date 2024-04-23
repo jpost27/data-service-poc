@@ -9,7 +9,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VenueRepository extends JPRepository<Venue, FdVenue, QFdVenue, Integer> {
+public interface VenueRepository extends JPRepository<FdVenue, QFdVenue, Integer> {
 
     FdVenue findByLatitudeAndLongitude(BigDecimal latitude, BigDecimal longitude);
 

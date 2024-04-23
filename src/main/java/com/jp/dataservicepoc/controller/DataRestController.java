@@ -54,7 +54,7 @@ public class DataRestController {
             @RequestParam MultiValueMap<String, String> params) {
         PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
                 persistenceMapping.entityMetadataFromQueryName(queryName);
-        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
+        JPRepository<E, Q, I> repository = entityMetadata.repository();
 
         List<String> fetchClauses = params.remove("fetch");
         FetchTreeGenerator.FetchNode fetchTreeRoot;
@@ -90,7 +90,7 @@ public class DataRestController {
             @RequestParam MultiValueMap<String, String> params) {
         PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
                 persistenceMapping.entityMetadataFromQueryName(queryName);
-        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
+        JPRepository<E, Q, I> repository = entityMetadata.repository();
 
         List<String> fetchClauses = params.remove("fetch");
         Optional<BooleanExpression> predicate = getBooleanExpression(entityMetadata.entityClass(), params, search);
@@ -119,7 +119,7 @@ public class DataRestController {
             @RequestParam MultiValueMap<String, String> params) {
         PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
                 persistenceMapping.entityMetadataFromQueryName(queryName);
-        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
+        JPRepository<E, Q, I> repository = entityMetadata.repository();
 
         List<String> fetchClauses = params.remove("fetch");
         BooleanExpression predicate = getBooleanExpression(entityMetadata.entityClass(), params, searchQuery).orElse(null);

@@ -242,7 +242,7 @@ public class PersistenceMapping {
             Class<E> entityClass,
             Class<Q> qClass,
             EntityPathBase<?> qRoot,
-            JPRepository<D, E, Q, I> repository) {}
+            JPRepository<E, Q, I> repository) {}
 
     public record EntityConnection(
             Class<?> rootEntityClass,

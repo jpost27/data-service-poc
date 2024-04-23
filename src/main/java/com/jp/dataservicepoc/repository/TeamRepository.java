@@ -8,7 +8,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeamRepository extends JPRepository<Team, FdTeam, QFdTeam, Integer> {
+public interface TeamRepository extends JPRepository<FdTeam, QFdTeam, Integer> {
 
     @Override
     default void customize(QuerydslBindings bindings, QFdTeam root) {}

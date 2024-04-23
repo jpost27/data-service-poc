@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamAssociationTypeRepository
-        extends JPRepository<TeamAssociationType, FdTeamAssociationType, QFdTeamAssociationType, String> {
+        extends JPRepository<FdTeamAssociationType, QFdTeamAssociationType, String> {
 
     @Override
     default void customize(QuerydslBindings bindings, QFdTeamAssociationType root) {}

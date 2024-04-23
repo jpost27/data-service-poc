@@ -8,7 +8,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompetitorRepository extends JPRepository<Competitor, FdCompetitor, QFdCompetitor, Integer> {
+public interface CompetitorRepository extends JPRepository<FdCompetitor, QFdCompetitor, Integer> {
 
     @Override
     default void customize(QuerydslBindings bindings, QFdCompetitor root) {}

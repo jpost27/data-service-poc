@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamAssociationRepository
-        extends JPRepository<TeamAssociation, FdTeamAssociation, QFdTeamAssociation, Integer> {
+        extends JPRepository<FdTeamAssociation, QFdTeamAssociation, Integer> {
 
     Optional<FdTeamAssociation> findByName(String name);
 

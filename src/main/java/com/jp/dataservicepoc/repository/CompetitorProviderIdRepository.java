@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompetitorProviderIdRepository
-        extends JPRepository<CompetitorProviderId, FdCompetitorProviderId, QFdCompetitorProviderId, Integer> {
+        extends JPRepository<FdCompetitorProviderId, QFdCompetitorProviderId, Integer> {
 
     Optional<FdCompetitorProviderId> findBySportradarCompetitorId(String sportradarCompetitorId);
 
