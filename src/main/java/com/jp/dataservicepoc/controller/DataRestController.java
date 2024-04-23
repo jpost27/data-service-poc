@@ -1,13 +1,18 @@
 package com.jp.dataservicepoc.controller;
 
 import com.jp.dataservicepoc.data.EntityDtoMapper;
+import com.jp.dataservicepoc.data.FetchTreeGenerator;
 import com.jp.dataservicepoc.data.ParameterPredicateBuilder;
 import com.jp.dataservicepoc.data.PersistenceMapping;
 import com.jp.dataservicepoc.data.SearchPredicateBuilder;
 import com.jp.dataservicepoc.repository.base.JPRepository;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.EntityPathBase;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
+import jakarta.persistence.PersistenceContext;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,21 +41,30 @@ public class DataRestController {
 
     private final EntityDtoMapper entityDtoMapper;
     private final PersistenceMapping persistenceMapping;
+    private final FetchTreeGenerator fetchTreeGenerator;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @SuppressWarnings("unchecked")
-    @GetMapping(value = "/{dtoName}/{id}")
+    @GetMapping(value = "/{queryName}/{id}")
     public <D, E, Q extends EntityPath<E>, I> ResponseEntity<D> findById(
-            @PathVariable(name = "dtoName") String dtoName,
+            @PathVariable(name = "queryName") String queryName,
             @PathVariable(name = "id") String id,
             @RequestParam MultiValueMap<String, String> params) {
-        Class<E> entityClass =
-                (Class<E>) persistenceMapping.getQueryStringToEntityClassMap().get(dtoName);
-        Class<D> dtoClass =
-                (Class<D>) persistenceMapping.getEntityClassToDtoClassMap().get(entityClass);
-        JPRepository<D, E, Q, I> repository = (JPRepository<D, E, Q, I>)
-                persistenceMapping.getEntityClassToRepositoryMap().get(entityClass);
+        PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
+                persistenceMapping.entityMetadataFromQueryName(queryName);
+        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
 
-        Class<?> idClass = Arrays.stream(entityClass.getDeclaredFields())
+        List<String> fetchClauses = params.remove("fetch");
+        FetchTreeGenerator.FetchNode fetchTreeRoot;
+        if (fetchClauses != null) {
+            fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
+        } else {
+            fetchTreeRoot = null;
+        }
+
+        Class<?> idClass = Arrays.stream(entityMetadata.entityClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Id.class))
                 .map(Field::getType)
                 .findFirst()
@@ -60,62 +76,78 @@ public class DataRestController {
             entityOptional = repository.findById((I) id);
         }
         return entityOptional
-                .map(entity -> entityDtoMapper.entityToDto(entity, dtoClass, params.get("fetch")))
+                .map(entity -> entityDtoMapper.entityToDto(entity, entityMetadata.dtoClass(), fetchTreeRoot))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @SuppressWarnings("unchecked")
-    @GetMapping(value = "/{dtoName}/all")
+    @GetMapping(value = "/{queryName}/all")
     public <D, E, Q extends EntityPath<E>, I> List<D> searchAll(
-            @PathVariable(name = "dtoName") String dtoName,
+            @PathVariable(name = "queryName") String queryName,
             @RequestParam(value = "search", required = false) String search,
+            @SortDefault Sort sort,
             @RequestParam MultiValueMap<String, String> params) {
-        Class<E> entityClass =
-                (Class<E>) persistenceMapping.getQueryStringToEntityClassMap().get(dtoName);
-        Class<D> dtoClass =
-                (Class<D>) persistenceMapping.getEntityClassToDtoClassMap().get(entityClass);
-        JPRepository<D, E, Q, I> repository = (JPRepository<D, E, Q, I>)
-                persistenceMapping.getEntityClassToRepositoryMap().get(entityClass);
+        PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
+                persistenceMapping.entityMetadataFromQueryName(queryName);
+        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
 
         List<String> fetchClauses = params.remove("fetch");
-        Optional<BooleanExpression> predicate = getBooleanExpression(entityClass, params, search);
+        Optional<BooleanExpression> predicate = getBooleanExpression(entityMetadata.entityClass(), params, search);
+
+        EntityPathBase<E> qClass = (EntityPathBase<E>) entityMetadata.qRoot();
+        EntityGraph<E> entityGraph = null;
+        FetchTreeGenerator.FetchNode fetchTreeRoot = null;
+        if (fetchClauses != null) {
+            entityGraph = (EntityGraph<E>) entityManager.createEntityGraph(qClass.getType());
+            fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
+            fetchTreeGenerator.applyToEntityGraph(fetchTreeRoot, entityGraph);
+        }
 
         return entityDtoMapper.entitiesToDtos(
-                predicate.map(repository::findAll).orElseGet(repository::findAll), dtoClass, fetchClauses);
+                repository.findAll(qClass, entityManager, predicate.orElse(null), sort, entityGraph),
+                entityMetadata.dtoClass(),
+                fetchTreeRoot);
     }
 
     @SuppressWarnings("unchecked")
-    @GetMapping(value = "/{dtoName}")
+    @GetMapping(value = "/{queryName}")
     public <D, E, Q extends EntityPath<E>, I> Page<D> search(
-            @PathVariable(name = "dtoName") String dtoName,
+            @PathVariable(name = "queryName") String queryName,
             @RequestParam(value = "query", required = false) String searchQuery,
             @PageableDefault(size = 20) Pageable pageable,
             @RequestParam MultiValueMap<String, String> params) {
-        Class<E> entityClass =
-                (Class<E>) persistenceMapping.getQueryStringToEntityClassMap().get(dtoName);
-        Class<D> dtoClass =
-                (Class<D>) persistenceMapping.getEntityClassToDtoClassMap().get(entityClass);
-        JPRepository<D, E, Q, I> repository = (JPRepository<D, E, Q, I>)
-                persistenceMapping.getEntityClassToRepositoryMap().get(entityClass);
+        PersistenceMapping.EntityMetadata<D, E, Q, I> entityMetadata =
+                persistenceMapping.entityMetadataFromQueryName(queryName);
+        JPRepository<D, E, Q, I> repository = entityMetadata.repository();
 
-        params.remove("size");
-        params.remove("sort");
-        params.remove("page");
         List<String> fetchClauses = params.remove("fetch");
-        Optional<BooleanExpression> predicate = getBooleanExpression(entityClass, params, searchQuery);
+        BooleanExpression predicate = getBooleanExpression(entityMetadata.entityClass(), params, searchQuery).orElse(null);
 
+        EntityPathBase<E> qClass = (EntityPathBase<E>) entityMetadata.qRoot();
+        EntityGraph<E> entityGraph = null;
+        FetchTreeGenerator.FetchNode fetchTreeRoot = null;
+        if (fetchClauses != null) {
+            entityGraph = (EntityGraph<E>) entityManager.createEntityGraph(qClass.getType());
+            fetchTreeRoot = fetchTreeGenerator.createFetchTree(entityMetadata.entityClass(), fetchClauses);
+            fetchTreeGenerator.applyToEntityGraph(fetchTreeRoot, entityGraph);
+        }
+
+        Page<E> entityPage = repository.findAll(qClass, entityManager, predicate, pageable, entityGraph);
         List<D> responseDtos = entityDtoMapper.entitiesToDtos(
-                predicate.map(pred -> repository.findAll(pred, pageable)).orElseGet(() -> repository.findAll(pageable)),
-                dtoClass,
-                fetchClauses);
-        long count = predicate.map(repository::count).orElseGet(repository::count);
+                entityPage.getContent(),
+                entityMetadata.dtoClass(),
+                fetchTreeRoot);
+        long count = entityPage.getTotalElements();
         return new PageImpl<>(responseDtos, pageable, count);
     }
 
     private <E> Optional<BooleanExpression> getBooleanExpression(
             Class<E> entityClass, MultiValueMap<String, String> params, String searchQuery) {
         BooleanExpression exp = null;
+        params.remove("size");
+        params.remove("sort");
+        params.remove("page");
         if (searchQuery != null) {
             SearchPredicateBuilder<E> builder = new SearchPredicateBuilder<>(entityClass);
             Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
