@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class EntityDtoMapper {
 
     private final ModelMapper modelMapper;
+    private final FetchTreeGenerator fetchTreeGenerator;
 
     public <D, E> List<D> entitiesToDtos(Iterable<E> entities, Class<D> dtoClass) {
         return Streams.stream(entities)
@@ -33,21 +34,24 @@ public class EntityDtoMapper {
     }
 
     public <D, E> List<D> entitiesToDtos(
-            Iterable<E> entities, Class<D> dtoClass, @Nullable Collection<String> fetchClauses) {
-        Map<String, FetchNode> fetchGraph =
-                Optional.ofNullable(fetchClauses).map(this::createFetchGraph).orElse(Collections.emptyMap());
+            Iterable<E> entities, Class<D> dtoClass, @Nullable FetchTreeGenerator.FetchNode fetchTreeRoot) {
+        Map<String, FetchTreeGenerator.FetchNode> fetchGraph =
+                Optional.ofNullable(fetchTreeRoot).map(FetchTreeGenerator.FetchNode::children).orElse(Collections.emptyMap());
         return Streams.stream(entities)
                 .map(entity -> entityToDto(entity, dtoClass, fetchGraph))
                 .toList();
     }
 
-    public <D, E> D entityToDto(E entity, Class<D> dtoClass, @Nullable Collection<String> fetchClauses) {
-        Map<String, FetchNode> fetchGraph =
-                Optional.ofNullable(fetchClauses).map(this::createFetchGraph).orElse(Collections.emptyMap());
+    public <D, E> D entityToDto(E entity, Class<D> dtoClass, @Nullable FetchTreeGenerator.FetchNode fetchTreeRoot) {
+        if (entity == null) {
+            return null;
+        }
+        Map<String, FetchTreeGenerator.FetchNode> fetchGraph =
+                Optional.ofNullable(fetchTreeRoot).map(FetchTreeGenerator.FetchNode::children).orElse(Collections.emptyMap());
         return entityToDto(entity, dtoClass, fetchGraph);
     }
 
-    private <D, E> D entityToDto(E entity, Class<D> dtoClass, @NonNull Map<String, FetchNode> fetchGraph) {
+    private <D, E> D entityToDto(E entity, Class<D> dtoClass, @NonNull Map<String, FetchTreeGenerator.FetchNode> fetchGraph) {
         D dto = modelMapper.map(entity, dtoClass);
         fetchGraph.forEach((key, fetchNode) -> {
             try {
@@ -85,29 +89,6 @@ public class EntityDtoMapper {
         return dto;
     }
 
-    private Map<String, FetchNode> createFetchGraph(Collection<String> fetchClauses) {
-        Map<String, FetchNode> fetchNodeMap = new HashMap<>();
-        for (String fetchClause : fetchClauses) {
-            String[] nodeNames = fetchClause.split("\\.");
-            FetchNode currentNode = null;
-            for (String nodeName : nodeNames) {
-                if (currentNode == null) {
-                    // Root node
-                    currentNode = fetchNodeMap.getOrDefault(nodeName, new FetchNode(nodeName, new HashMap<>()));
-                    fetchNodeMap.put(nodeName, currentNode);
-                } else if (currentNode.children().containsKey(nodeName)) {
-                    // Node has been created by another fetch clause
-                    currentNode = currentNode.children().get(nodeName);
-                } else {
-                    // New path found in fetch clause
-                    currentNode.children().put(nodeName, new FetchNode(nodeName, new HashMap<>()));
-                    currentNode = currentNode.children().get(nodeName);
-                }
-            }
-        }
-        return fetchNodeMap;
-    }
-
     private String nameToDtoName(String name) {
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
@@ -116,5 +97,4 @@ public class EntityDtoMapper {
         return "Fd" + nameToDtoName(name);
     }
 
-    record FetchNode(String name, @NonNull Map<String, FetchNode> children) {}
 }
