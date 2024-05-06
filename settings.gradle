@@ -1,1 +1,3 @@
 rootProject.name = 'data-service-poc'
+
+include 'data-service'
