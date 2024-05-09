@@ -1,59 +1,51 @@
 package com.jp.codegen.generator;
 
 import com.google.common.base.CaseFormat;
-import com.jp.codegen.model.ColumnDefinition;
-import com.jp.codegen.model.ForeignKeyMetadata;
-import com.jp.codegen.model.SqlTable;
 import com.jp.codegen.model.TableRelationship;
+import com.jp.codegen.model.enums.ColumnTypes;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.Table;
 
 public class TypeScriptInterfaceGenerator implements SqlTableFileGenerator {
     @Override
-    public void generate(SqlTable table, File outputDirectory) {
+    public void generate(Table table, File outputDirectory) {
+
+        Collection<TableRelationship> allTableRelationships = new ArrayList<>();
+        allTableRelationships.addAll(table.getReferencedTables().stream()
+                .flatMap(referencedTable -> TableRelationship.of(table, referencedTable).stream())
+                .collect(Collectors.toSet()));
+        allTableRelationships.addAll(table.getDependentTables().stream()
+                .flatMap(dependentTable -> TableRelationship.of(table, dependentTable).stream())
+                .collect(Collectors.toSet()));
+
         // Generate JPA entity class
         StringBuilder sb = new StringBuilder();
-        table.getTableRelationships().stream()
-                .map(TableRelationship::targetTableName)
-                .map(this::transformTableName)
-                .collect(Collectors.toSet())
-                .forEach(targetTableName -> {
-                    sb.append("import { ")
-                            .append(targetTableName)
-                            .append(" } from './")
-                            .append(targetTableName)
-                            .append("';\n");
-                });
+
+        // Add imports for referenced tables
+        importRelatedTables(sb, allTableRelationships);
+
+        // Add interface definition
         sb.append("export interface ")
-                .append(transformTableName(table.getTableName()))
+                .append(transformTableName(table.getName()))
                 .append(" {\n");
-        for (ColumnDefinition column : table.getColumnDefinitions()) {
-            sb.append("    ").append(transformColumnName(column.name()));
-            if (column.nullable()) {
-                sb.append("?");
-            }
-            sb.append(": ");
-            switch (column.type()) {
-                case INTEGER, BIG_DECIMAL, BIG_INT -> sb.append("number");
-                case VARCHAR -> sb.append("string");
-                case BOOLEAN -> sb.append("boolean");
-                case DATE -> sb.append("Date");
-                default -> throw new IllegalArgumentException("Unsupported column type: " + column.type());
-            }
-            sb.append(";\n");
-        }
-        for (ForeignKeyMetadata foreignKeyMetadata : table.getForeignKeyMetadataSet()) {
-            sb.append("    ").append(transformColumnName(foreignKeyMetadata.getReferencedTableName()));
-            sb.append(": ");
-            sb.append(transformTableName(foreignKeyMetadata.getReferencedTableName()));
-            sb.append(";\n");
-        }
+
+        // Add column definitions
+        addColumnDefinitions(sb, table.getColumns());
+
+        // Add relationship definitions
+        addRelationshipDefinitions(sb, allTableRelationships);
+
         sb.append("}\n");
 
         // Write to outputDirectory
         outputDirectory.mkdirs();
-        File outputFile = new File(outputDirectory, transformTableName(table.getTableName()) + ".ts");
+        File outputFile = new File(outputDirectory, transformTableName(table.getName()) + ".ts");
         // Write to outputFile
         if (outputFile.exists()) {
             outputFile.delete();
@@ -62,6 +54,58 @@ public class TypeScriptInterfaceGenerator implements SqlTableFileGenerator {
             writer.write(sb.toString());
         } catch (Exception e) {
             throw new RuntimeException("Error writing to file: " + outputFile, e);
+        }
+    }
+
+    private void importRelatedTables(StringBuilder sb, Collection<TableRelationship> allTableRelationships) {
+        allTableRelationships.stream()
+                .map(TableRelationship::targetTable)
+                .map(Table::getName)
+                .map(this::transformTableName)
+                .collect(Collectors.toSet())
+                .forEach(referencedTableName -> {
+                    sb.append("import { ")
+                            .append(referencedTableName)
+                            .append(" } from './")
+                            .append(referencedTableName)
+                            .append("';\n");
+                });
+    }
+
+    private void addColumnDefinitions(StringBuilder sb, List<Column> columns) {
+        for (Column column : columns) {
+            sb.append("    ").append(transformColumnName(column.getName()));
+            if (column.isNullable()) {
+                sb.append("?");
+            }
+            sb.append(": ");
+            switch (ColumnTypes.fromSqlType(column.getType().getDatabaseSpecificTypeName())) {
+                case INTEGER, BIG_DECIMAL, BIG_INT -> sb.append("number");
+                case VARCHAR -> sb.append("string");
+                case BOOLEAN -> sb.append("boolean");
+                case DATE, DATE_TIME -> sb.append("Date");
+                default -> throw new IllegalArgumentException(
+                        "Unsupported column type: " + column.getType().getDatabaseSpecificTypeName());
+            }
+            sb.append(";\n");
+        }
+    }
+
+    private void addRelationshipDefinitions(StringBuilder sb, Collection<TableRelationship> allTableRelationships) {
+        for (TableRelationship relationship : allTableRelationships) {
+            sb.append("    ")
+                    .append(transformColumnName(relationship.targetTable().getName()));
+            sb.append("?: ");
+            switch (relationship.relationshipType()) {
+                case ONE_TO_ONE, MANY_TO_ONE -> sb.append(
+                        transformTableName(relationship.targetTable().getName()));
+                case ONE_TO_MANY, MANY_TO_MANY -> sb.append(
+                                transformTableName(relationship.targetTable().getName()))
+                        .append("[]");
+                case NONE -> throw new IllegalArgumentException(
+                        "Unsupported relationship type: " + relationship.relationshipType());
+            }
+            sb.append(";\n");
         }
     }
 

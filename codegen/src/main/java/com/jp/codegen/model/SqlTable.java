@@ -60,7 +60,7 @@ public class SqlTable {
         for (ForeignKeyMetadata foreignKeyMetadata : foreignKeyMetadataSet) {
             RelationshipType relationshipType = getTableRelationshipType(foreignKeyMetadata);
             Optional<TableRelationship> existingRelationship = tableRelationships.stream()
-                    .filter(tr -> tr.targetTableName().equals(foreignKeyMetadata.getReferencedTableName()))
+                    .filter(tr -> tr.targetTable().equals(foreignKeyMetadata.getReferencedTableName()))
                     .findFirst();
             if (existingRelationship.isPresent()) {
                 if (existingRelationship
@@ -75,12 +75,12 @@ public class SqlTable {
             if (relationshipType == RelationshipType.NONE) {
                 continue;
             }
-            tableRelationships.add(new TableRelationship(
-                    foreignKeyMetadata.getReferencingTableName(),
-                    foreignKeyMetadata.getReferencingColumnName(),
-                    foreignKeyMetadata.getReferencedTableName(),
-                    foreignKeyMetadata.getReferencedKeyName(),
-                    getTableRelationshipType(foreignKeyMetadata)));
+            //            tableRelationships.add(new TableRelationship(
+            //                    foreignKeyMetadata.getReferencingTableName(),
+            //                    foreignKeyMetadata.getReferencingColumnName(),
+            //                    foreignKeyMetadata.getReferencedTableName(),
+            //                    foreignKeyMetadata.getReferencedKeyName(),
+            //                    getTableRelationshipType(foreignKeyMetadata)));
         }
         return tableRelationships;
     }

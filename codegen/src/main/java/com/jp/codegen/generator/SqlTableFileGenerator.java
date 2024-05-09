@@ -1,7 +1,7 @@
 package com.jp.codegen.generator;
 
-import com.jp.codegen.model.SqlTable;
 import java.io.File;
+import schemacrawler.schema.Table;
 
 public interface SqlTableFileGenerator {
 
@@ -10,5 +10,5 @@ public interface SqlTableFileGenerator {
      * @param table
      * @param outputDirectory
      */
-    void generate(SqlTable table, File outputDirectory);
+    void generate(Table table, File outputDirectory);
 }

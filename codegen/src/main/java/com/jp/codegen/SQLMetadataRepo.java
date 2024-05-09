@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SQLMetadataRepo {
 
-    private static final List<String> ignoredTables = List.of(
+    public static final List<String> ignoredTables = List.of(
             "BATCH_JOB_EXECUTION",
             "BATCH_JOB_EXECUTION_CONTEXT",
             "BATCH_JOB_EXECUTION_PARAMS",

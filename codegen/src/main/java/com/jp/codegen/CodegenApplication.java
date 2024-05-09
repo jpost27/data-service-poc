@@ -5,6 +5,7 @@ package com.jp.codegen;
 
 import com.jp.codegen.generator.SqlTableFileGenerator;
 import com.jp.codegen.generator.TypeScriptInterfaceGenerator;
+import java.io.File;
 import java.util.Set;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
@@ -54,17 +55,26 @@ public class CodegenApplication {
             }
             System.out.println(schema);
             for (final Table table : catalog.getTables(schema)) {
-                System.out.println("o--> " + table);
-                table.getReferencedTables()
-                        .forEach(referencedTable -> System.out.println("Referenced -> " + referencedTable));
-                table.getDependentTables()
-                        .forEach(referencedTable -> System.out.println("Dependent -> " + referencedTable));
-
+                if (SQLMetadataRepo.ignoredTables.contains(table.getName())) {
+                    continue;
+                }
+                System.out.print("o--> " + table);
                 if (table instanceof View) {
                     System.out.println(" (VIEW)");
                 } else {
                     System.out.println();
                 }
+
+                System.out.println("Type -> " + table.getTableType());
+                table.getReferencedTables()
+                        .forEach(referencedTable -> System.out.println("Referenced -> " + referencedTable));
+                table.getDependentTables()
+                        .forEach(referencedTable -> System.out.println("Dependent -> " + referencedTable));
+                table.getTableConstraints()
+                        .forEach(constraint -> System.out.println(
+                                "Constraint -> " + constraint.getType() + " - " + constraint.getConstrainedColumns()));
+
+                generators.forEach(generator -> generator.generate(table, new File("output")));
 
                 for (final Column column : table.getColumns()) {
                     System.out.printf("     o--> %s (%s)%n", column, column.getType());
