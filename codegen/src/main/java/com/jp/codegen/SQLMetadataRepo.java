@@ -22,7 +22,9 @@ public class SQLMetadataRepo {
             "BATCH_JOB_INSTANCE",
             "BATCH_JOB_EXECUTION_SEQ",
             "BATCH_JOB_SEQ",
-            "BATCH_STEP_EXECUTION_SEQ");
+            "BATCH_STEP_EXECUTION_SEQ",
+            "team_team_associations",
+            "competitors_positions");
     private static final String schemaName = "sport_data";
 
     private final Connection connection;

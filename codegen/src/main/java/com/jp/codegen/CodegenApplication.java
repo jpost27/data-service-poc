@@ -3,6 +3,8 @@ package com.jp.codegen;
 // import org.springframework.boot.SpringApplication;
 // import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.jp.codegen.generator.JPAEntityGenerator;
+import com.jp.codegen.generator.JavaDTOGenerator;
 import com.jp.codegen.generator.SqlTableFileGenerator;
 import com.jp.codegen.generator.TypeScriptInterfaceGenerator;
 import java.io.File;
@@ -26,10 +28,8 @@ import us.fatehi.utility.datasource.MultiUseUserCredentials;
 public class CodegenApplication {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sport_data?createDatabaseIfNotExist=false";
-    private static final Set<SqlTableFileGenerator> generators = Set.of(
-            // new JPAEntityGenerator(),
-            // new JavaDTOGenerator(),
-            new TypeScriptInterfaceGenerator());
+    private static final Set<SqlTableFileGenerator> generators =
+            Set.of(new JPAEntityGenerator(), new JavaDTOGenerator(), new TypeScriptInterfaceGenerator());
 
     public static void main(String[] args) {
         //        SpringApplication.run(CodegenApplication.class, args);
@@ -81,52 +81,6 @@ public class CodegenApplication {
                 }
             }
         }
-
-        //        Connection connection = null;
-        //        try {
-        //            // below two lines are used for connectivity.
-        //            Class.forName("com.mysql.cj.jdbc.Driver");
-        //            connection = DriverManager.getConnection(URL, "root", "password");
-        //
-        //            SQLMetadataRepo sqlMetadataRepo = new SQLMetadataRepo(connection);
-        //            List<ColumnMetadata> columnMetadata = sqlMetadataRepo.getColumnMetadata();
-        //            List<ForeignKeyMetadata> foreignKeyMetadata = sqlMetadataRepo.getForeignKeyMetadata();
-        //            Map<String, SqlTable> tableMap = new HashMap<>();
-        //            for (ColumnMetadata column : columnMetadata) {
-        //                String tableName = column.getTableName();
-        //                SqlTable sqlTable = tableMap.get(tableName);
-        //                if (sqlTable == null) {
-        //                    sqlTable = new SqlTable(tableName, tableMap);
-        //                    tableMap.put(tableName, sqlTable);
-        //                }
-        //                List<ColumnMetadata> columnMetadataList = sqlTable.getColumnMetadataList();
-        //                columnMetadataList.add(column);
-        //            }
-        //            for (ForeignKeyMetadata foreignKey : foreignKeyMetadata) {
-        //                String tableName = foreignKey.getReferencingTableName();
-        //                String referencedTableName = foreignKey.getReferencedTableName();
-        //                SqlTable sqlTable = tableMap.get(tableName);
-        //                SqlTable referencedTable = tableMap.get(referencedTableName);
-        //                if (sqlTable == null) {
-        //                    sqlTable = new SqlTable(tableName, tableMap);
-        //                    tableMap.put(tableName, sqlTable);
-        //                }
-        //                if (referencedTable == null) {
-        //                    referencedTable = new SqlTable(referencedTableName, tableMap);
-        //                    tableMap.put(referencedTableName, referencedTable);
-        //                }
-        //                sqlTable.getForeignKeyMetadataSet().add(foreignKey);
-        //                referencedTable.getReferecesSet().add(foreignKey);
-        //            }
-        //            connection.close();
-        //            for (SqlTable sqlTable : tableMap.values()) {
-        //                System.out.println(sqlTable.getTableName());
-        //                System.out.println(sqlTable.getColumnDefinitions());
-        //                generators.forEach(generator -> generator.generate(sqlTable, new File("output")));
-        //            }
-        //        } catch (Exception exception) {
-        //            exception.printStackTrace();
-        //        }
     }
 
     private static DatabaseConnectionSource getDataSource() {

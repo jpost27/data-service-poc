@@ -22,13 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class PersistenceMapping {
 
     private static final String ENTITY_PACKAGE = "com.jp.dataservice.model.entity";
@@ -44,6 +48,9 @@ public class PersistenceMapping {
     private final Map<Class<?>, Map<String, EntityConnection>> entityRelationshipMap;
 
     public PersistenceMapping(@Autowired List<JPRepository> repositories) {
+        log.info("Creating PersistenceMapping");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         final Map<String, EntityMetadata<?, ?, ?, ?>> entityNameToEntityMetadata = new HashMap<>();
         final Map<String, EntityMetadata<?, ?, ?, ?>> dtoNameToEntityMetadata = new HashMap<>();
@@ -127,6 +134,17 @@ public class PersistenceMapping {
         this.dtoNameToEntityMetadata = Collections.unmodifiableMap(dtoNameToEntityMetadata);
         this.queryNameToEntityMetadata = Collections.unmodifiableMap(queryNameToEntityMetadata);
         this.entityRelationshipMap = Collections.unmodifiableMap(entityRelationshipMap);
+        log.info("PersistenceMapping created in {} seconds", stopWatch.getTime(TimeUnit.MILLISECONDS) / 1000.0);
+        if (entityNameToEntityMetadata.size() != dtoNameToEntityMetadata.size()
+                || entityNameToEntityMetadata.size() != queryNameToEntityMetadata.size()
+                || entityNameToEntityMetadata.size() < 1) {
+            log.warn("entityNameToEntityMetadata keys: {}", entityNameToEntityMetadata.keySet());
+            log.warn("dtoNameToEntityMetadata keys: {}", dtoNameToEntityMetadata.keySet());
+            log.warn("queryNameToEntityMetadata keys: {}", queryNameToEntityMetadata.keySet());
+            throw new IllegalStateException("Inconsistent entity metadata maps detected. Exiting.");
+        }
+        log.info("Entities mapped: {}", entityNameToEntityMetadata.size());
+        log.info("Entity relationships mapped: {}", entityRelationshipMap.size());
     }
 
     private Class<?> getInnerType(Field field) {
@@ -140,9 +158,8 @@ public class PersistenceMapping {
 
     // "Team" -> "teams"
     public static String dtoNameToQueryString(String dtoName) {
-        return Character.toLowerCase(dtoName.charAt(0))
-                + dtoName.substring(1)
-                + (dtoName.charAt(dtoName.length() - 1) == 's' ? "es" : "s");
+        return Character.toLowerCase(dtoName.charAt(0)) + dtoName.substring(1);
+        //                + (dtoName.charAt(dtoName.length() - 1) == 's' ? "es" : "s");
     }
 
     // "Team" -> "FdTeam"

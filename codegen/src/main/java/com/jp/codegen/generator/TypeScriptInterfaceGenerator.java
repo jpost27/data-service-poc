@@ -5,24 +5,15 @@ import com.jp.codegen.model.TableRelationship;
 import com.jp.codegen.model.enums.ColumnTypes;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.Table;
 
-public class TypeScriptInterfaceGenerator implements SqlTableFileGenerator {
+public class TypeScriptInterfaceGenerator extends SqlTableFileGenerator {
     @Override
-    public void generate(Table table, File outputDirectory) {
-
-        Collection<TableRelationship> allTableRelationships = new ArrayList<>();
-        allTableRelationships.addAll(table.getReferencedTables().stream()
-                .flatMap(referencedTable -> TableRelationship.of(table, referencedTable).stream())
-                .collect(Collectors.toSet()));
-        allTableRelationships.addAll(table.getDependentTables().stream()
-                .flatMap(dependentTable -> TableRelationship.of(table, dependentTable).stream())
-                .collect(Collectors.toSet()));
+    public void generate(Table table, Collection<TableRelationship> allTableRelationships, File outputDirectory) {
 
         // Generate JPA entity class
         StringBuilder sb = new StringBuilder();
@@ -36,7 +27,7 @@ public class TypeScriptInterfaceGenerator implements SqlTableFileGenerator {
                 .append(" {\n");
 
         // Add column definitions
-        addColumnDefinitions(sb, table.getColumns());
+        addColumnDefinitions(sb, sortColumns(table.getColumns()));
 
         // Add relationship definitions
         addRelationshipDefinitions(sb, allTableRelationships);
