@@ -1,6 +1,7 @@
 package com.jp.codegen.generator;
 
 import com.google.common.base.CaseFormat;
+import com.jp.codegen.model.GenerationOptions;
 import com.jp.codegen.model.TableRelationship;
 import com.jp.codegen.model.enums.RelationshipType;
 import com.squareup.javapoet.ClassName;
@@ -10,10 +11,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -25,47 +22,59 @@ import schemacrawler.schema.Table;
 @Slf4j
 public class JavaDTOGenerator extends SqlTableFileGenerator {
 
+    public JavaDTOGenerator(GenerationOptions generationOptions) {
+        super(generationOptions);
+    }
+
     @Override
-    protected void generate(Table table, Collection<TableRelationship> allTableRelationships, File outputDirectory) {
+    protected boolean shouldGenerate(Table table) {
+        return options.isGenerateJavaDto();
+    }
 
-        // Generate DTO class
-        TypeSpec.Builder dtoClass = TypeSpec.classBuilder(transformTableName(table.getName()));
-        dtoClass.addModifiers(Modifier.PUBLIC);
+    @Override
+    protected void generate(Table table, Collection<TableRelationship> allTableRelationships) {
 
+        // Initialize DTO spec
+        TypeSpec.Builder dtoSpec = TypeSpec.classBuilder(transformTableName(table.getName()));
+        dtoSpec.addModifiers(Modifier.PUBLIC);
+
+        // Add column fields
         for (Column column : sortColumns(table.getColumns())) {
-            String name = transformColumnName(column.getName());
-            TypeName type = TypeVariableName.get(column.getType().getTypeMappedClass());
-            dtoClass.addField(type, name, Modifier.PRIVATE);
-            dtoClass.addMethod(createGetter(name, type));
-            dtoClass.addMethod(createSetter(name, type));
+            addColumn(dtoSpec, column);
         }
+        // Add relationship fields
         Set<RelationshipType> listRelationTypes = Set.of(RelationshipType.ONE_TO_MANY, RelationshipType.MANY_TO_MANY);
         for (TableRelationship relationship : allTableRelationships) {
-            String name = transformColumnName(relationship.targetTable().getName());
-            TypeName type = TypeVariableName.get(
-                    transformTableName(relationship.targetTable().getName()));
-            if (listRelationTypes.contains(relationship.relationshipType())) {
-                type = ParameterizedTypeName.get(ClassName.get(List.class), type);
-            }
-            dtoClass.addField(type, name, Modifier.PRIVATE);
-            dtoClass.addMethod(createGetter(name, type));
-            dtoClass.addMethod(createSetter(name, type));
+            addTableRelationship(dtoSpec, relationship, listRelationTypes);
         }
 
         // Write to outputDirectory
-        JavaFile javaFile = JavaFile.builder("com.jp.codegen.dto", dtoClass.build())
+        JavaFile javaFile = JavaFile.builder(options.getJavaDtoPackageName(), dtoSpec.build())
                 .indent("    ")
                 .build();
 
-        try {
-            if (log.isTraceEnabled()) {
-                javaFile.writeTo(System.out);
-            }
-            Path path = Paths.get(outputDirectory.toURI());
-            javaFile.writeTo(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        writeJavaFile(javaFile, options.getJavaDtoOutputDirectory());
+    }
+
+    private void addColumn(TypeSpec.Builder dtoClass, Column column) {
+        String name = transformColumnName(column.getName());
+        TypeName type = TypeVariableName.get(column.getType().getTypeMappedClass());
+        dtoClass.addField(type, name, Modifier.PRIVATE);
+        dtoClass.addMethod(createGetter(name, type));
+        dtoClass.addMethod(createSetter(name, type));
+    }
+
+    private void addTableRelationship(
+            TypeSpec.Builder dtoClass, TableRelationship relationship, Set<RelationshipType> listRelationTypes) {
+        String name = transformColumnName(relationship.targetTable().getName());
+        TypeName type = TypeVariableName.get(
+                transformTableName(relationship.targetTable().getName()));
+        if (listRelationTypes.contains(relationship.relationshipType())) {
+            type = ParameterizedTypeName.get(ClassName.get(List.class), type);
         }
+        dtoClass.addField(type, name, Modifier.PRIVATE);
+        dtoClass.addMethod(createGetter(name, type));
+        dtoClass.addMethod(createSetter(name, type));
     }
 
     private MethodSpec createGetter(String fieldName, TypeName fieldType) {

@@ -1,10 +1,10 @@
 package com.jp.codegen.generator;
 
 import com.google.common.base.CaseFormat;
+import com.jp.codegen.model.GenerationOptions;
 import com.jp.codegen.model.TableRelationship;
 import com.jp.codegen.model.enums.ColumnTypes;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,8 +12,17 @@ import schemacrawler.schema.Column;
 import schemacrawler.schema.Table;
 
 public class TypeScriptInterfaceGenerator extends SqlTableFileGenerator {
+    public TypeScriptInterfaceGenerator(GenerationOptions generationOptions) {
+        super(generationOptions);
+    }
+
     @Override
-    public void generate(Table table, Collection<TableRelationship> allTableRelationships, File outputDirectory) {
+    protected boolean shouldGenerate(Table table) {
+        return options.isGenerateTypeScript();
+    }
+
+    @Override
+    public void generate(Table table, Collection<TableRelationship> allTableRelationships) {
 
         // Generate JPA entity class
         StringBuilder sb = new StringBuilder();
@@ -35,17 +44,9 @@ public class TypeScriptInterfaceGenerator extends SqlTableFileGenerator {
         sb.append("}\n");
 
         // Write to outputDirectory
-        outputDirectory.mkdirs();
-        File outputFile = new File(outputDirectory, transformTableName(table.getName()) + ".ts");
+        File outputFile = new File(options.getTypeScriptOutputDirectory(), transformTableName(table.getName()) + ".ts");
         // Write to outputFile
-        if (outputFile.exists()) {
-            outputFile.delete();
-        }
-        try (FileWriter writer = new FileWriter(outputFile)) {
-            writer.write(sb.toString());
-        } catch (Exception e) {
-            throw new RuntimeException("Error writing to file: " + outputFile, e);
-        }
+        writeTextToFile(sb.toString(), outputFile);
     }
 
     private void importRelatedTables(StringBuilder sb, Collection<TableRelationship> allTableRelationships) {

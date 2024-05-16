@@ -7,6 +7,7 @@ import com.jp.codegen.generator.JPAEntityGenerator;
 import com.jp.codegen.generator.JavaDTOGenerator;
 import com.jp.codegen.generator.SqlTableFileGenerator;
 import com.jp.codegen.generator.TypeScriptInterfaceGenerator;
+import com.jp.codegen.model.GenerationOptions;
 import java.io.File;
 import java.util.Set;
 import schemacrawler.schema.Catalog;
@@ -28,8 +29,6 @@ import us.fatehi.utility.datasource.MultiUseUserCredentials;
 public class CodegenApplication {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sport_data?createDatabaseIfNotExist=false";
-    private static final Set<SqlTableFileGenerator> generators =
-            Set.of(new JPAEntityGenerator(), new JavaDTOGenerator(), new TypeScriptInterfaceGenerator());
 
     public static void main(String[] args) {
         //        SpringApplication.run(CodegenApplication.class, args);
@@ -49,13 +48,24 @@ public class CodegenApplication {
         final DatabaseConnectionSource dataSource = getDataSource();
         final Catalog catalog = SchemaCrawlerUtility.getCatalog(dataSource, options);
 
+        GenerationOptions generationOptions = GenerationOptions.builder()
+                .generateJavaDto(true)
+                .javaDtoOutputDirectory(new File("src/main/java/com/jp/dto"))
+                .javaDtoPackageName("com.jp.dto")
+                .generateJpaEntity(true)
+                .jpaEntityOutputDirectory(new File("src/main/java/com/jp/entity"))
+                .jpaEntityClassPrefix("Fd")
+                .jpaEntityPackageName("com.jp.entity")
+                .generateTypeScript(true)
+                .typeScriptOutputDirectory(new File("src/main/webapp/app/entities"))
+                .build();
         for (final Schema schema : catalog.getSchemas()) {
-            if (!schema.toString().equals("sport_data")) {
+            if (!schema.toString().equals(generationOptions.getSchemaName())) {
                 continue;
             }
             System.out.println(schema);
             for (final Table table : catalog.getTables(schema)) {
-                if (SQLMetadataRepo.ignoredTables.contains(table.getName())) {
+                if (generationOptions.getIgnoredTableNames().contains(table.getName())) {
                     continue;
                 }
                 System.out.print("o--> " + table);
@@ -73,8 +83,11 @@ public class CodegenApplication {
                 table.getTableConstraints()
                         .forEach(constraint -> System.out.println(
                                 "Constraint -> " + constraint.getType() + " - " + constraint.getConstrainedColumns()));
-
-                generators.forEach(generator -> generator.generate(table, new File("output")));
+                final Set<SqlTableFileGenerator> generators = Set.of(
+                        new JPAEntityGenerator(generationOptions),
+                        new JavaDTOGenerator(generationOptions),
+                        new TypeScriptInterfaceGenerator(generationOptions));
+                generators.forEach(generator -> generator.generate(table));
 
                 for (final Column column : table.getColumns()) {
                     System.out.printf("     o--> %s (%s)%n", column, column.getType());
