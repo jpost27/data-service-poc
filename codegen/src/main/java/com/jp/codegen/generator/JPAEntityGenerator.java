@@ -32,8 +32,6 @@ import schemacrawler.schema.Table;
 @Slf4j
 public class JPAEntityGenerator extends SqlTableFileGenerator {
 
-    private final String entityPackageName = "com.jp.codegen.entity";
-
     public JPAEntityGenerator(GenerationOptions generationOptions) {
         super(generationOptions);
     }
@@ -41,6 +39,25 @@ public class JPAEntityGenerator extends SqlTableFileGenerator {
     @Override
     protected boolean shouldGenerate(Table table) {
         return options.isGenerateJpaEntity();
+    }
+
+    @Override
+    protected void validateOptions() throws IllegalStateException {
+        if (options.isGenerateJpaEntity()) {
+            if (options.getJpaEntityPackageName() == null) {
+                throw new IllegalStateException("JPA entity package name is required");
+            }
+            if (options.getJpaEntityProjectDirectory() == null) {
+                throw new IllegalStateException("JPA entity project directory is required");
+            }
+            if (options.getJpaEntityProjectDirectory().exists()
+                    && !options.getJpaEntityProjectDirectory().isDirectory()) {
+                throw new IllegalStateException("JPA entity project directory must be a directory");
+            }
+            if (options.getJpaEntityClassPrefix() == null) {
+                throw new IllegalStateException("JPA entity class prefix is required");
+            }
+        }
     }
 
     @Override
@@ -74,12 +91,14 @@ public class JPAEntityGenerator extends SqlTableFileGenerator {
         JavaFile entityJavaFile = buildJavaFile(entitySpecBuilder.build());
         Optional<JavaFile> entityIdJavaFileOptional = entityIdSpecOptional.map(this::buildJavaFile);
 
-        writeJavaFile(entityJavaFile, options.getJpaEntityOutputDirectory());
-        entityIdJavaFileOptional.ifPresent(javaFile -> writeJavaFile(javaFile, options.getJpaEntityOutputDirectory()));
+        writeJavaFile(entityJavaFile, options.getJpaEntityProjectDirectory());
+        entityIdJavaFileOptional.ifPresent(javaFile -> writeJavaFile(javaFile, options.getJpaEntityProjectDirectory()));
     }
 
     private JavaFile buildJavaFile(TypeSpec build) {
-        return JavaFile.builder(entityPackageName, build).indent("    ").build();
+        return JavaFile.builder(options.getJpaEntityPackageName(), build)
+                .indent("    ")
+                .build();
     }
 
     private Optional<TypeSpec> createEntityIdClass(Table table, TypeSpec.Builder entityClass) {

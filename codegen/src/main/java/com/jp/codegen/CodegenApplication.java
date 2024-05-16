@@ -5,11 +5,13 @@ package com.jp.codegen;
 
 import com.jp.codegen.generator.JPAEntityGenerator;
 import com.jp.codegen.generator.JavaDTOGenerator;
+import com.jp.codegen.generator.RepositoryGenerator;
 import com.jp.codegen.generator.SqlTableFileGenerator;
 import com.jp.codegen.generator.TypeScriptInterfaceGenerator;
 import com.jp.codegen.model.GenerationOptions;
 import java.io.File;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.Schema;
@@ -25,7 +27,7 @@ import us.fatehi.utility.datasource.DatabaseConnectionSource;
 import us.fatehi.utility.datasource.DatabaseConnectionSources;
 import us.fatehi.utility.datasource.MultiUseUserCredentials;
 
-// @SpringBootApplication
+@Slf4j
 public class CodegenApplication {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sport_data?createDatabaseIfNotExist=false";
@@ -50,15 +52,28 @@ public class CodegenApplication {
 
         GenerationOptions generationOptions = GenerationOptions.builder()
                 .generateJavaDto(true)
-                .javaDtoOutputDirectory(new File("src/main/java/com/jp/dto"))
-                .javaDtoPackageName("com.jp.dto")
+                .javaDtoProjectDirectory(
+                        new File("/Users/joshua.post/Documents/Code/data-service-poc/data-service/src/main/java"))
+                .javaDtoPackageName("com.jp.dataservice.model.dto")
                 .generateJpaEntity(true)
-                .jpaEntityOutputDirectory(new File("src/main/java/com/jp/entity"))
+                .jpaEntityProjectDirectory(
+                        new File("/Users/joshua.post/Documents/Code/data-service-poc/data-service/src/main/java"))
                 .jpaEntityClassPrefix("Fd")
-                .jpaEntityPackageName("com.jp.entity")
+                .jpaEntityPackageName("com.jp.dataservice.model.entity")
                 .generateTypeScript(true)
                 .typeScriptOutputDirectory(new File("src/main/webapp/app/entities"))
+                .schemaName("sport_data")
+                .generateRepository(true)
+                .repositoryPackageName("com.jp.dataservice.repository")
+                .repositoryProjectDirectory(
+                        new File("/Users/joshua.post/Documents/Code/data-service-poc/data-service/src/main/java"))
+                .repositorySuperInterfaceName("com.jp.dataservice.repository.base.JPRepository")
                 .build();
+        final Set<SqlTableFileGenerator> generators = Set.of(
+                new JPAEntityGenerator(generationOptions),
+                new JavaDTOGenerator(generationOptions),
+                new TypeScriptInterfaceGenerator(generationOptions),
+                new RepositoryGenerator(generationOptions));
         for (final Schema schema : catalog.getSchemas()) {
             if (!schema.toString().equals(generationOptions.getSchemaName())) {
                 continue;
@@ -68,25 +83,19 @@ public class CodegenApplication {
                 if (generationOptions.getIgnoredTableNames().contains(table.getName())) {
                     continue;
                 }
+                if (!table.hasPrimaryKey() && table.getColumns().size() < 2) {
+                    log.warn(
+                            "Skipping table {} as it has no primary key and less than 2 columns. Deemed likely to be a sequence table.",
+                            table.getFullName());
+                    continue;
+                }
                 System.out.print("o--> " + table);
                 if (table instanceof View) {
                     System.out.println(" (VIEW)");
                 } else {
                     System.out.println();
                 }
-
                 System.out.println("Type -> " + table.getTableType());
-                table.getReferencedTables()
-                        .forEach(referencedTable -> System.out.println("Referenced -> " + referencedTable));
-                table.getDependentTables()
-                        .forEach(referencedTable -> System.out.println("Dependent -> " + referencedTable));
-                table.getTableConstraints()
-                        .forEach(constraint -> System.out.println(
-                                "Constraint -> " + constraint.getType() + " - " + constraint.getConstrainedColumns()));
-                final Set<SqlTableFileGenerator> generators = Set.of(
-                        new JPAEntityGenerator(generationOptions),
-                        new JavaDTOGenerator(generationOptions),
-                        new TypeScriptInterfaceGenerator(generationOptions));
                 generators.forEach(generator -> generator.generate(table));
 
                 for (final Column column : table.getColumns()) {

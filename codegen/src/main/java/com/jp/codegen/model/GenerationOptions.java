@@ -8,18 +8,28 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GenerationOptions {
+    // The following fields are used to generate Java DTO classes
     private final boolean generateJavaDto;
-    private final File javaDtoOutputDirectory;
+    private final File javaDtoProjectDirectory;
     private final String javaDtoPackageName;
 
+    // The following fields are used to generate JPA entity classes
     private final boolean generateJpaEntity;
-    private final File jpaEntityOutputDirectory;
+    private final File jpaEntityProjectDirectory;
     private final String jpaEntityPackageName;
     private final String jpaEntityClassPrefix;
     private final String jpaEntityClassSuffix;
 
+    // The following fields are used to generate TypeScript interfaces
     private final boolean generateTypeScript;
     private final File typeScriptOutputDirectory;
+
+    // The following fields are used to generate Spring Data JPA repositories
+    private final boolean generateRepository;
+    private final File repositoryProjectDirectory;
+    private final String repositoryPackageName;
+    private final String repositorySuperInterfaceName;
+
     private final List<String> ignoredTableNames = List.of(
             "BATCH_JOB_EXECUTION",
             "BATCH_JOB_EXECUTION_CONTEXT",
@@ -32,5 +42,5 @@ public class GenerationOptions {
             "BATCH_STEP_EXECUTION_SEQ",
             "team_team_associations",
             "competitors_positions");
-    private final String schemaName = "sport_data";
+    private final String schemaName;
 }

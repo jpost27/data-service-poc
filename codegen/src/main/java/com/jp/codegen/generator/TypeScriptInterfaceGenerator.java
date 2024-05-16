@@ -22,6 +22,19 @@ public class TypeScriptInterfaceGenerator extends SqlTableFileGenerator {
     }
 
     @Override
+    protected void validateOptions() throws IllegalStateException {
+        if (options.isGenerateTypeScript()) {
+            if (options.getTypeScriptOutputDirectory() == null) {
+                throw new IllegalStateException("TypeScript output directory is required");
+            }
+            if (options.getTypeScriptOutputDirectory().exists()
+                    && !options.getTypeScriptOutputDirectory().isDirectory()) {
+                throw new IllegalStateException("TypeScript output directory must be a directory");
+            }
+        }
+    }
+
+    @Override
     public void generate(Table table, Collection<TableRelationship> allTableRelationships) {
 
         // Generate JPA entity class

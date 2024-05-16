@@ -32,6 +32,22 @@ public class JavaDTOGenerator extends SqlTableFileGenerator {
     }
 
     @Override
+    protected void validateOptions() throws IllegalStateException {
+        if (options.isGenerateJavaDto()) {
+            if (options.getJavaDtoPackageName() == null) {
+                throw new IllegalStateException("Java DTO package name is required");
+            }
+            if (options.getJavaDtoProjectDirectory() == null) {
+                throw new IllegalStateException("Java DTO project directory is required");
+            }
+            if (options.getJavaDtoProjectDirectory().exists()
+                    && !options.getJavaDtoProjectDirectory().isDirectory()) {
+                throw new IllegalStateException("Java DTO project directory must be a directory");
+            }
+        }
+    }
+
+    @Override
     protected void generate(Table table, Collection<TableRelationship> allTableRelationships) {
 
         // Initialize DTO spec
@@ -53,7 +69,7 @@ public class JavaDTOGenerator extends SqlTableFileGenerator {
                 .indent("    ")
                 .build();
 
-        writeJavaFile(javaFile, options.getJavaDtoOutputDirectory());
+        writeJavaFile(javaFile, options.getJavaDtoProjectDirectory());
     }
 
     private void addColumn(TypeSpec.Builder dtoClass, Column column) {

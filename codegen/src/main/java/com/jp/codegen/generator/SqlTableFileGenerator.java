@@ -12,16 +12,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.Table;
 
 @Slf4j
-@RequiredArgsConstructor
 public abstract class SqlTableFileGenerator {
 
     protected final GenerationOptions options;
+
+    public SqlTableFileGenerator(GenerationOptions options) {
+        this.options = options;
+        validateOptions();
+    }
 
     /**
      * Generate a file for the given table
@@ -29,12 +32,6 @@ public abstract class SqlTableFileGenerator {
      * @param table
      */
     public void generate(Table table) {
-        if (!table.hasPrimaryKey() && table.getColumns().size() < 2) {
-            log.warn(
-                    "Skipping table {} as it has no primary key and less than 2 columns. Deemed likely to be a sequence table.",
-                    table.getFullName());
-            return;
-        }
         if (!shouldGenerate(table)) {
             return;
         }
@@ -49,6 +46,8 @@ public abstract class SqlTableFileGenerator {
     }
 
     protected abstract boolean shouldGenerate(Table table);
+
+    protected abstract void validateOptions() throws IllegalStateException;
 
     protected abstract void generate(Table table, Collection<TableRelationship> allTableRelationships);
 

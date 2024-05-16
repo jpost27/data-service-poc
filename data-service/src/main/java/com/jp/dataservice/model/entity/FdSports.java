@@ -25,16 +25,16 @@ public class FdSports {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdSports")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<FdLeagues> fdLeagues;
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdSports", optional = false)
     @PrimaryKeyJoinColumn
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdSportPositions fdSportPositions;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdSports")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdLeagues> fdLeagues;
 
     public Integer getSportId() {
         return sportId;
@@ -52,19 +52,19 @@ public class FdSports {
         this.name = name;
     }
 
-    public List<FdLeagues> getFdLeagues() {
-        return fdLeagues;
-    }
-
-    public void setFdLeagues(List<FdLeagues> fdLeagues) {
-        this.fdLeagues = fdLeagues;
-    }
-
     public FdSportPositions getFdSportPositions() {
         return fdSportPositions;
     }
 
     public void setFdSportPositions(FdSportPositions fdSportPositions) {
         this.fdSportPositions = fdSportPositions;
+    }
+
+    public List<FdLeagues> getFdLeagues() {
+        return fdLeagues;
+    }
+
+    public void setFdLeagues(List<FdLeagues> fdLeagues) {
+        this.fdLeagues = fdLeagues;
     }
 }

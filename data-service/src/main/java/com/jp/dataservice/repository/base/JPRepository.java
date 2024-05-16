@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -30,6 +31,9 @@ public interface JPRepository<E, Q extends com.querydsl.core.types.EntityPath<E>
                 JpaRepository<E, ID>,
                 QuerydslPredicateExecutor<E>,
                 QuerydslBinderCustomizer<Q> {
+
+    @Override
+    default void customize(QuerydslBindings bindings, Q root) {}
 
     @SuppressWarnings("unchecked")
     default Page<E> findAll(
