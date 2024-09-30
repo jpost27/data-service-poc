@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,7 +21,6 @@ public class FdSeasonTypes {
     private String seasonTypeCode;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdSeasonTypes")
-    @PrimaryKeyJoinColumn
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdSeasons> fdSeasons;

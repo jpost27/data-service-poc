@@ -22,6 +22,6 @@ export interface Competitors {
     competitorStatuses?: CompetitorStatuses;
     injuryStatuses?: InjuryStatuses;
     leagues?: Leagues;
-    competitorProviderIds?: CompetitorProviderIds;
     sportPositions?: SportPositions[];
+    competitorProviderIds?: CompetitorProviderIds;
 }

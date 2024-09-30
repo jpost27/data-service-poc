@@ -11,8 +11,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -36,8 +35,7 @@ public class FdSportPositions {
     @Nullable
     private Integer description;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

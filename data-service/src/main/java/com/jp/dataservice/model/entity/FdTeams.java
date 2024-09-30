@@ -66,12 +66,6 @@ public class FdTeams {
     @EqualsAndHashCode.Exclude
     private FdLeagues fdLeagues;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdTeams", optional = false)
-    @PrimaryKeyJoinColumn
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private FdTeamProviderIds fdTeamProviderIds;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -90,6 +84,12 @@ public class FdTeams {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdTeamAssociations> fdTeamAssociations;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdTeams", optional = false)
+    @PrimaryKeyJoinColumn
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private FdTeamProviderIds fdTeamProviderIds;
 
     public Integer getTeamId() {
         return teamId;
@@ -171,14 +171,6 @@ public class FdTeams {
         this.fdLeagues = fdLeagues;
     }
 
-    public FdTeamProviderIds getFdTeamProviderIds() {
-        return fdTeamProviderIds;
-    }
-
-    public void setFdTeamProviderIds(FdTeamProviderIds fdTeamProviderIds) {
-        this.fdTeamProviderIds = fdTeamProviderIds;
-    }
-
     public List<FdCompetitors> getFdCompetitors() {
         return fdCompetitors;
     }
@@ -201,5 +193,13 @@ public class FdTeams {
 
     public void setFdTeamAssociations(List<FdTeamAssociations> fdTeamAssociations) {
         this.fdTeamAssociations = fdTeamAssociations;
+    }
+
+    public FdTeamProviderIds getFdTeamProviderIds() {
+        return fdTeamProviderIds;
+    }
+
+    public void setFdTeamProviderIds(FdTeamProviderIds fdTeamProviderIds) {
+        this.fdTeamProviderIds = fdTeamProviderIds;
     }
 }

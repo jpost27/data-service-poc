@@ -7,9 +7,9 @@ public class Sports {
 
     private String name;
 
-    private SportPositions sportPositions;
-
     private List<Leagues> leagues;
+
+    private List<SportPositions> sportPositions;
 
     public Integer getSportId() {
         return sportId;
@@ -27,19 +27,19 @@ public class Sports {
         this.name = name;
     }
 
-    public SportPositions getSportPositions() {
-        return sportPositions;
-    }
-
-    public void setSportPositions(SportPositions sportPositions) {
-        this.sportPositions = sportPositions;
-    }
-
     public List<Leagues> getLeagues() {
         return leagues;
     }
 
     public void setLeagues(List<Leagues> leagues) {
         this.leagues = leagues;
+    }
+
+    public List<SportPositions> getSportPositions() {
+        return sportPositions;
+    }
+
+    public void setSportPositions(List<SportPositions> sportPositions) {
+        this.sportPositions = sportPositions;
     }
 }

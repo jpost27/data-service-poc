@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnReference;
 import schemacrawler.schema.ForeignKey;
@@ -24,8 +25,8 @@ public record TableRelationship(
                 .flatMap(fk -> fk.getColumnReferences().stream())
                 .collect(Collectors.toSet());
 
-        relationshipType =
-                getRelationshipType(targetTable, rootOwningKeyList, targetOwningKeyList, allColumnReferences);
+        relationshipType = getRelationshipType(
+                rootTable, targetTable, rootOwningKeyList, targetOwningKeyList, allColumnReferences);
         if (relationshipType == RelationshipType.MANY_TO_MANY) {
             return Optional.of(getManyToManyRelationship(rootTable, targetTable));
         }
@@ -35,6 +36,7 @@ public record TableRelationship(
     }
 
     private static RelationshipType getRelationshipType(
+            Table rootTable,
             Table targetTable,
             List<ForeignKey> rootOwningKeyList,
             List<ForeignKey> targetOwningKeyList,
@@ -42,6 +44,14 @@ public record TableRelationship(
         int rootPrimaryKeyCount = rootOwningKeyList.size();
         int targetPrimaryKeyCount = targetOwningKeyList.size();
         boolean allConnectionsArePrimaryKeys = true;
+        boolean rootContainsCompositeKey = rootTable.getColumns().stream()
+                        .filter(Column::isPartOfPrimaryKey)
+                        .count()
+                > 1;
+        boolean targetContainsCompositeKey = targetTable.getColumns().stream()
+                        .filter(Column::isPartOfPrimaryKey)
+                        .count()
+                > 1;
 
         for (ColumnReference columnReference : allColumnReferences) {
             if (!columnReference.getForeignKeyColumn().isPartOfPrimaryKey()) {
@@ -49,7 +59,7 @@ public record TableRelationship(
                 break;
             }
         }
-        if (allConnectionsArePrimaryKeys) {
+        if (allConnectionsArePrimaryKeys && !rootContainsCompositeKey && !targetContainsCompositeKey) {
             return RelationshipType.ONE_TO_ONE;
         } else if (rootPrimaryKeyCount == 1 && targetPrimaryKeyCount == 1) {
             return RelationshipType.ONE_TO_ONE;
@@ -102,5 +112,18 @@ public record TableRelationship(
                 .map(constraint -> (ForeignKey) constraint)
                 .filter(foreignKey -> foreignKey.getPrimaryKeyTable().getName().equals(targetTable.getName()))
                 .toList();
+    }
+
+    private static Set<ColumnReference> getAllColumnReferences(
+            List<TableConstraint> rootOwningKeyList, List<TableConstraint> targetOwningKeyList) {
+        return Streams.concat(rootOwningKeyList.stream(), targetOwningKeyList.stream())
+                .flatMap(key -> {
+                    if (key instanceof ForeignKey) {
+                        return ((ForeignKey) key).getColumnReferences().stream();
+                    } else {
+                        return Stream.of();
+                    }
+                })
+                .collect(Collectors.toSet());
     }
 }

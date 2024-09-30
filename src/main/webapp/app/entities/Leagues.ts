@@ -8,7 +8,7 @@ export interface Leagues {
     abbreviatedName: string;
     fullName: string;
     sports?: Sports;
-    seasons?: Seasons;
-    competitors?: Competitors[];
     teams?: Teams[];
+    seasons?: Seasons[];
+    competitors?: Competitors[];
 }

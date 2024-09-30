@@ -38,9 +38,9 @@ public class Competitors {
 
     private Leagues leagues;
 
-    private CompetitorProviderIds competitorProviderIds;
-
     private List<SportPositions> sportPositions;
+
+    private CompetitorProviderIds competitorProviderIds;
 
     public Integer getCompetitorId() {
         return competitorId;
@@ -178,19 +178,19 @@ public class Competitors {
         this.leagues = leagues;
     }
 
-    public CompetitorProviderIds getCompetitorProviderIds() {
-        return competitorProviderIds;
-    }
-
-    public void setCompetitorProviderIds(CompetitorProviderIds competitorProviderIds) {
-        this.competitorProviderIds = competitorProviderIds;
-    }
-
     public List<SportPositions> getSportPositions() {
         return sportPositions;
     }
 
     public void setSportPositions(List<SportPositions> sportPositions) {
         this.sportPositions = sportPositions;
+    }
+
+    public CompetitorProviderIds getCompetitorProviderIds() {
+        return competitorProviderIds;
+    }
+
+    public void setCompetitorProviderIds(CompetitorProviderIds competitorProviderIds) {
+        this.competitorProviderIds = competitorProviderIds;
     }
 }

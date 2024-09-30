@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import java.sql.Date;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -44,14 +43,12 @@ public class FdSeasons {
     private Date startDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId
     @JoinColumn(name = "league_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdLeagues fdLeagues;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId
     @JoinColumn(name = "season_type_code")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
