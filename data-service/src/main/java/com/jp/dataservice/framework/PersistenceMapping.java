@@ -1,6 +1,5 @@
-package com.jp.dataservice.data;
+package com.jp.dataservice.framework;
 
-import com.jp.dataservice.repository.base.JPRepository;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import jakarta.persistence.Entity;
@@ -42,6 +41,8 @@ public class PersistenceMapping {
 
     private final Map<String, EntityMetadata<?, ?, ?, ?>> entityNameToEntityMetadata;
     private final Map<String, EntityMetadata<?, ?, ?, ?>> dtoNameToEntityMetadata;
+
+    @Getter
     private final Map<String, EntityMetadata<?, ?, ?, ?>> queryNameToEntityMetadata;
     // FdTeam.class -> FdTeamColor.class -> OneToMany.class
     @Getter

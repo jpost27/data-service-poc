@@ -1,4 +1,4 @@
-package com.jp.dataservice.data;
+package com.jp.dataservice.framework;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;

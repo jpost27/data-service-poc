@@ -1,4 +1,4 @@
-package com.jp.dataservice.data;
+package com.jp.dataservice.framework;
 
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.ManyToMany;
@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -63,32 +62,24 @@ public class FetchTreeGenerator {
     }
 
     public <E> void applyToEntityGraph(FetchNode root, EntityGraph<E> entityGraph) {
-        AtomicBoolean bagFetched = new AtomicBoolean(false);
         root.children().forEach((key, value) -> {
             boolean isBagFetch = relationshipIsBagFetch(root, value.name());
-            if (!isBagFetch || !bagFetched.get()) {
-                if (isBagFetch) {
-                    bagFetched.set(true);
-                }
-                addSubgraph(entityGraph.addSubgraph(PersistenceMapping.queryStringToGraphPath(key)), value, bagFetched);
+            if (!isBagFetch) {
+                addSubgraph(entityGraph.addSubgraph(PersistenceMapping.queryStringToGraphPath(key)), value);
             }
         });
     }
 
-    private <X> void addSubgraph(Subgraph<X> subgraph, FetchNode node, AtomicBoolean bagFetched) {
+    private <X> void addSubgraph(Subgraph<X> subgraph, FetchNode node) {
         for (Map.Entry<String, FetchNode> child : node.children().entrySet()) {
             boolean isBagFetch = relationshipIsBagFetch(node, child.getValue().name());
-            if (!isBagFetch || !bagFetched.get()) {
-                if (isBagFetch) {
-                    bagFetched.set(true);
-                }
+            if (!isBagFetch) {
                 if (child.getValue().children().isEmpty()) {
                     subgraph.addAttributeNodes(PersistenceMapping.queryStringToGraphPath(child.getKey()));
                 } else {
                     addSubgraph(
                             subgraph.addSubgraph(PersistenceMapping.queryStringToGraphPath(child.getKey())),
-                            child.getValue(),
-                            bagFetched);
+                            child.getValue());
                 }
             }
         }

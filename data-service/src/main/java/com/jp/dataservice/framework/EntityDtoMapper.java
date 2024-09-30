@@ -1,6 +1,5 @@
-package com.jp.dataservice.data;
+package com.jp.dataservice.framework;
 
-import graphql.com.google.common.collect.Streams;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -27,7 +27,7 @@ public class EntityDtoMapper {
     private final FetchTreeGenerator fetchTreeGenerator;
 
     public <D, E> List<D> entitiesToDtos(Iterable<E> entities, Class<D> dtoClass) {
-        return Streams.stream(entities)
+        return StreamSupport.stream(entities.spliterator(), false)
                 .map(entity -> modelMapper.map(entity, dtoClass))
                 .toList();
     }
@@ -37,7 +37,7 @@ public class EntityDtoMapper {
         Map<String, FetchTreeGenerator.FetchNode> fetchGraph = Optional.ofNullable(fetchTreeRoot)
                 .map(FetchTreeGenerator.FetchNode::children)
                 .orElse(Collections.emptyMap());
-        return Streams.stream(entities)
+        return StreamSupport.stream(entities.spliterator(), false)
                 .map(entity -> entityToDto(entity, dtoClass, fetchGraph))
                 .toList();
     }

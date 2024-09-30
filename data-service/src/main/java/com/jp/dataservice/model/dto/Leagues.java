@@ -13,9 +13,11 @@ public class Leagues {
 
     private Sports sports;
 
-    private List<Teams> teams;
+    private List<Seasons> seasons;
 
     private List<Competitors> competitors;
+
+    private List<Teams> teams;
 
     public Integer getLeagueId() {
         return leagueId;
@@ -57,12 +59,12 @@ public class Leagues {
         this.sports = sports;
     }
 
-    public List<Teams> getTeams() {
-        return teams;
+    public List<Seasons> getSeasons() {
+        return seasons;
     }
 
-    public void setTeams(List<Teams> teams) {
-        this.teams = teams;
+    public void setSeasons(List<Seasons> seasons) {
+        this.seasons = seasons;
     }
 
     public List<Competitors> getCompetitors() {
@@ -71,5 +73,13 @@ public class Leagues {
 
     public void setCompetitors(List<Competitors> competitors) {
         this.competitors = competitors;
+    }
+
+    public List<Teams> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Teams> teams) {
+        this.teams = teams;
     }
 }

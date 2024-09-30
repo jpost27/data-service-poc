@@ -1,11 +1,5 @@
-package com.jp.dataservice.controller;
+package com.jp.dataservice.framework;
 
-import com.jp.dataservice.data.EntityDtoMapper;
-import com.jp.dataservice.data.FetchTreeGenerator;
-import com.jp.dataservice.data.ParameterPredicateBuilder;
-import com.jp.dataservice.data.PersistenceMapping;
-import com.jp.dataservice.data.SearchPredicateBuilder;
-import com.jp.dataservice.repository.base.JPRepository;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.EntityPathBase;

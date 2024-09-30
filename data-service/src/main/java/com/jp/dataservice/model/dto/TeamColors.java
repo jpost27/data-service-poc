@@ -17,9 +17,9 @@ public class TeamColors {
 
     private String teamColorTypeCode;
 
-    private Teams teams;
-
     private TeamColorTypes teamColorTypes;
+
+    private Teams teams;
 
     public Integer getTeamColorId() {
         return teamColorId;
@@ -85,19 +85,19 @@ public class TeamColors {
         this.teamColorTypeCode = teamColorTypeCode;
     }
 
-    public Teams getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Teams teams) {
-        this.teams = teams;
-    }
-
     public TeamColorTypes getTeamColorTypes() {
         return teamColorTypes;
     }
 
     public void setTeamColorTypes(TeamColorTypes teamColorTypes) {
         this.teamColorTypes = teamColorTypes;
+    }
+
+    public Teams getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Teams teams) {
+        this.teams = teams;
     }
 }

@@ -1,4 +1,4 @@
-package com.jp.dataservice.data;
+package com.jp.dataservice.framework;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 

@@ -73,16 +73,16 @@ public class FdCompetitors {
     private String uniformIdentifier;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "league_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private FdLeagues fdLeagues;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdTeams fdTeams;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "competitor_status_code")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private FdCompetitorStatuses fdCompetitorStatuses;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "injury_status_id")
@@ -91,10 +91,16 @@ public class FdCompetitors {
     private FdInjuryStatuses fdInjuryStatuses;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "competitor_status_code")
+    @JoinColumn(name = "league_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private FdCompetitorStatuses fdCompetitorStatuses;
+    private FdLeagues fdLeagues;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdCompetitors", optional = false)
+    @PrimaryKeyJoinColumn
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private FdCompetitorProviderIds fdCompetitorProviderIds;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -104,12 +110,6 @@ public class FdCompetitors {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdSportPositions> fdSportPositions;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdCompetitors", optional = false)
-    @PrimaryKeyJoinColumn
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private FdCompetitorProviderIds fdCompetitorProviderIds;
 
     public Integer getCompetitorId() {
         return competitorId;
@@ -215,28 +215,12 @@ public class FdCompetitors {
         this.uniformIdentifier = uniformIdentifier;
     }
 
-    public FdLeagues getFdLeagues() {
-        return fdLeagues;
-    }
-
-    public void setFdLeagues(FdLeagues fdLeagues) {
-        this.fdLeagues = fdLeagues;
-    }
-
     public FdTeams getFdTeams() {
         return fdTeams;
     }
 
     public void setFdTeams(FdTeams fdTeams) {
         this.fdTeams = fdTeams;
-    }
-
-    public FdInjuryStatuses getFdInjuryStatuses() {
-        return fdInjuryStatuses;
-    }
-
-    public void setFdInjuryStatuses(FdInjuryStatuses fdInjuryStatuses) {
-        this.fdInjuryStatuses = fdInjuryStatuses;
     }
 
     public FdCompetitorStatuses getFdCompetitorStatuses() {
@@ -247,12 +231,20 @@ public class FdCompetitors {
         this.fdCompetitorStatuses = fdCompetitorStatuses;
     }
 
-    public List<FdSportPositions> getFdSportPositions() {
-        return fdSportPositions;
+    public FdInjuryStatuses getFdInjuryStatuses() {
+        return fdInjuryStatuses;
     }
 
-    public void setFdSportPositions(List<FdSportPositions> fdSportPositions) {
-        this.fdSportPositions = fdSportPositions;
+    public void setFdInjuryStatuses(FdInjuryStatuses fdInjuryStatuses) {
+        this.fdInjuryStatuses = fdInjuryStatuses;
+    }
+
+    public FdLeagues getFdLeagues() {
+        return fdLeagues;
+    }
+
+    public void setFdLeagues(FdLeagues fdLeagues) {
+        this.fdLeagues = fdLeagues;
     }
 
     public FdCompetitorProviderIds getFdCompetitorProviderIds() {
@@ -261,5 +253,13 @@ public class FdCompetitors {
 
     public void setFdCompetitorProviderIds(FdCompetitorProviderIds fdCompetitorProviderIds) {
         this.fdCompetitorProviderIds = fdCompetitorProviderIds;
+    }
+
+    public List<FdSportPositions> getFdSportPositions() {
+        return fdSportPositions;
+    }
+
+    public void setFdSportPositions(List<FdSportPositions> fdSportPositions) {
+        this.fdSportPositions = fdSportPositions;
     }
 }

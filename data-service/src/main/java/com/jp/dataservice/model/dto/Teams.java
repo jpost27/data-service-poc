@@ -23,13 +23,13 @@ public class Teams {
 
     private Leagues leagues;
 
+    private TeamProviderIds teamProviderIds;
+
     private List<Competitors> competitors;
 
     private List<TeamColors> teamColors;
 
     private List<TeamAssociations> teamAssociations;
-
-    private TeamProviderIds teamProviderIds;
 
     public Integer getTeamId() {
         return teamId;
@@ -111,6 +111,14 @@ public class Teams {
         this.leagues = leagues;
     }
 
+    public TeamProviderIds getTeamProviderIds() {
+        return teamProviderIds;
+    }
+
+    public void setTeamProviderIds(TeamProviderIds teamProviderIds) {
+        this.teamProviderIds = teamProviderIds;
+    }
+
     public List<Competitors> getCompetitors() {
         return competitors;
     }
@@ -133,13 +141,5 @@ public class Teams {
 
     public void setTeamAssociations(List<TeamAssociations> teamAssociations) {
         this.teamAssociations = teamAssociations;
-    }
-
-    public TeamProviderIds getTeamProviderIds() {
-        return teamProviderIds;
-    }
-
-    public void setTeamProviderIds(TeamProviderIds teamProviderIds) {
-        this.teamProviderIds = teamProviderIds;
     }
 }

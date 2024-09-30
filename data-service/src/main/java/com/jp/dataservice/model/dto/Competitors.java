@@ -30,17 +30,17 @@ public class Competitors {
 
     private String uniformIdentifier;
 
-    private Leagues leagues;
-
     private Teams teams;
-
-    private InjuryStatuses injuryStatuses;
 
     private CompetitorStatuses competitorStatuses;
 
-    private List<SportPositions> sportPositions;
+    private InjuryStatuses injuryStatuses;
+
+    private Leagues leagues;
 
     private CompetitorProviderIds competitorProviderIds;
+
+    private List<SportPositions> sportPositions;
 
     public Integer getCompetitorId() {
         return competitorId;
@@ -146,28 +146,12 @@ public class Competitors {
         this.uniformIdentifier = uniformIdentifier;
     }
 
-    public Leagues getLeagues() {
-        return leagues;
-    }
-
-    public void setLeagues(Leagues leagues) {
-        this.leagues = leagues;
-    }
-
     public Teams getTeams() {
         return teams;
     }
 
     public void setTeams(Teams teams) {
         this.teams = teams;
-    }
-
-    public InjuryStatuses getInjuryStatuses() {
-        return injuryStatuses;
-    }
-
-    public void setInjuryStatuses(InjuryStatuses injuryStatuses) {
-        this.injuryStatuses = injuryStatuses;
     }
 
     public CompetitorStatuses getCompetitorStatuses() {
@@ -178,12 +162,20 @@ public class Competitors {
         this.competitorStatuses = competitorStatuses;
     }
 
-    public List<SportPositions> getSportPositions() {
-        return sportPositions;
+    public InjuryStatuses getInjuryStatuses() {
+        return injuryStatuses;
     }
 
-    public void setSportPositions(List<SportPositions> sportPositions) {
-        this.sportPositions = sportPositions;
+    public void setInjuryStatuses(InjuryStatuses injuryStatuses) {
+        this.injuryStatuses = injuryStatuses;
+    }
+
+    public Leagues getLeagues() {
+        return leagues;
+    }
+
+    public void setLeagues(Leagues leagues) {
+        this.leagues = leagues;
     }
 
     public CompetitorProviderIds getCompetitorProviderIds() {
@@ -192,5 +184,13 @@ public class Competitors {
 
     public void setCompetitorProviderIds(CompetitorProviderIds competitorProviderIds) {
         this.competitorProviderIds = competitorProviderIds;
+    }
+
+    public List<SportPositions> getSportPositions() {
+        return sportPositions;
+    }
+
+    public void setSportPositions(List<SportPositions> sportPositions) {
+        this.sportPositions = sportPositions;
     }
 }

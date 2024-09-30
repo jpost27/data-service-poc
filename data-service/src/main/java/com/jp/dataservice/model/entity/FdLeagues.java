@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -38,14 +39,20 @@ public class FdLeagues {
     private FdSports fdSports;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdLeagues")
+    @PrimaryKeyJoinColumn
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<FdTeams> fdTeams;
+    private List<FdSeasons> fdSeasons;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdLeagues")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdCompetitors> fdCompetitors;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdLeagues")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdTeams> fdTeams;
 
     public Integer getLeagueId() {
         return leagueId;
@@ -87,12 +94,12 @@ public class FdLeagues {
         this.fdSports = fdSports;
     }
 
-    public List<FdTeams> getFdTeams() {
-        return fdTeams;
+    public List<FdSeasons> getFdSeasons() {
+        return fdSeasons;
     }
 
-    public void setFdTeams(List<FdTeams> fdTeams) {
-        this.fdTeams = fdTeams;
+    public void setFdSeasons(List<FdSeasons> fdSeasons) {
+        this.fdSeasons = fdSeasons;
     }
 
     public List<FdCompetitors> getFdCompetitors() {
@@ -101,5 +108,13 @@ public class FdLeagues {
 
     public void setFdCompetitors(List<FdCompetitors> fdCompetitors) {
         this.fdCompetitors = fdCompetitors;
+    }
+
+    public List<FdTeams> getFdTeams() {
+        return fdTeams;
+    }
+
+    public void setFdTeams(List<FdTeams> fdTeams) {
+        this.fdTeams = fdTeams;
     }
 }

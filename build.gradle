@@ -1,13 +1,6 @@
 plugins {
     id 'java'
-    id "com.diffplug.spotless" version "6.21.0"
-}
-
-group = 'com.jp'
-version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '17'
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 configurations {
@@ -20,31 +13,46 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-}
+subprojects {
+    group = 'com.jp'
+    version = '0.0.1-SNAPSHOT'
 
-spotless {
+    apply plugin: 'java'
+    apply plugin: 'com.diffplug.spotless'
+
     java {
-        target '**/src/*/java/**/*.java'
-        targetExclude '**/src/main/java/**/entity/Q*.java'
-        importOrder()
-        removeUnusedImports()
-        toggleOffOn()
-        palantirJavaFormat()
-        endWithNewline()
-        custom 'noWildcardImports', {
-            if (it.contains('*;\n')) {
-                throw new Error('No wildcard imports allowed')
-            }
-        } as Closure<String>
+        sourceCompatibility = '21'
     }
-}
+    repositories {
+        mavenCentral()
+    }
 
-tasks.register('copyGitHooks') {
-    copy() {
-        from('hooks/pre-commit')
-        into('.git/hooks')
+    spotless {
+        java {
+            ratchetFrom 'origin/main'
+            target '**/src/*/java/**/*.java','**/src/test/*/java/**/*.java'
+            importOrder()
+            removeUnusedImports()
+            toggleOffOn()
+            palantirJavaFormat()
+            endWithNewline()
+            custom 'noWildcardImports', {
+                if (it.contains('*;\n')) {
+                    throw new Error('No wildcard imports allowed')
+                }
+            }
+        }
+        format 'json', {
+            target '**/*.json'
+            endWithNewline()
+        }
+        format 'terraform', {
+            target '**/*.tf'
+            endWithNewline()
+        }
     }
+
+    compileJava.dependsOn 'spotlessApply'
 }
 
 tasks.named('test') {

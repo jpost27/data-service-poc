@@ -1,4 +1,4 @@
-package com.jp.dataservice.repository.base;
+package com.jp.dataservice.framework;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.EntityPathBase;

@@ -48,16 +48,16 @@ public class FdTeamColors {
     private String teamColorTypeCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private FdTeams fdTeams;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_color_type_code")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdTeamColorTypes fdTeamColorTypes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private FdTeams fdTeams;
 
     public Integer getTeamColorId() {
         return teamColorId;
@@ -123,19 +123,19 @@ public class FdTeamColors {
         this.teamColorTypeCode = teamColorTypeCode;
     }
 
-    public FdTeams getFdTeams() {
-        return fdTeams;
-    }
-
-    public void setFdTeams(FdTeams fdTeams) {
-        this.fdTeams = fdTeams;
-    }
-
     public FdTeamColorTypes getFdTeamColorTypes() {
         return fdTeamColorTypes;
     }
 
     public void setFdTeamColorTypes(FdTeamColorTypes fdTeamColorTypes) {
         this.fdTeamColorTypes = fdTeamColorTypes;
+    }
+
+    public FdTeams getFdTeams() {
+        return fdTeams;
+    }
+
+    public void setFdTeams(FdTeams fdTeams) {
+        this.fdTeams = fdTeams;
     }
 }
