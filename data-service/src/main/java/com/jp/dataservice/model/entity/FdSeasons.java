@@ -7,32 +7,22 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.sql.Date;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "seasons")
 @ToString
 @EqualsAndHashCode
-@IdClass(FdSeasonsId.class)
 public class FdSeasons {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "league_id", nullable = false, unique = true, insertable = false, updatable = false)
-    private Integer leagueId;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "season_type_code", nullable = false, unique = true, insertable = false, updatable = false)
-    private String seasonTypeCode;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "year", nullable = false, unique = true)
-    private Integer year;
+    @Column(name = "season_id", nullable = false, unique = true)
+    private Integer seasonId;
 
     @Column(name = "end_date")
     @Nullable
@@ -41,6 +31,15 @@ public class FdSeasons {
     @Column(name = "start_date")
     @Nullable
     private Date startDate;
+
+    @Column(name = "year", nullable = false, unique = true)
+    private Integer year;
+
+    @Column(name = "league_id", nullable = false, unique = true, insertable = false, updatable = false)
+    private Integer leagueId;
+
+    @Column(name = "season_type_code", nullable = false, unique = true, insertable = false, updatable = false)
+    private String seasonTypeCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "league_id")
@@ -54,28 +53,17 @@ public class FdSeasons {
     @EqualsAndHashCode.Exclude
     private FdSeasonTypes fdSeasonTypes;
 
-    public Integer getLeagueId() {
-        return leagueId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdSeasons")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdEvents> fdEvents;
+
+    public Integer getSeasonId() {
+        return seasonId;
     }
 
-    public void setLeagueId(Integer leagueId) {
-        this.leagueId = leagueId;
-    }
-
-    public String getSeasonTypeCode() {
-        return seasonTypeCode;
-    }
-
-    public void setSeasonTypeCode(String seasonTypeCode) {
-        this.seasonTypeCode = seasonTypeCode;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setSeasonId(Integer seasonId) {
+        this.seasonId = seasonId;
     }
 
     public Date getEndDate() {
@@ -94,6 +82,30 @@ public class FdSeasons {
         this.startDate = startDate;
     }
 
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getLeagueId() {
+        return leagueId;
+    }
+
+    public void setLeagueId(Integer leagueId) {
+        this.leagueId = leagueId;
+    }
+
+    public String getSeasonTypeCode() {
+        return seasonTypeCode;
+    }
+
+    public void setSeasonTypeCode(String seasonTypeCode) {
+        this.seasonTypeCode = seasonTypeCode;
+    }
+
     public FdLeagues getFdLeagues() {
         return fdLeagues;
     }
@@ -108,5 +120,13 @@ public class FdSeasons {
 
     public void setFdSeasonTypes(FdSeasonTypes fdSeasonTypes) {
         this.fdSeasonTypes = fdSeasonTypes;
+    }
+
+    public List<FdEvents> getFdEvents() {
+        return fdEvents;
+    }
+
+    public void setFdEvents(List<FdEvents> fdEvents) {
+        this.fdEvents = fdEvents;
     }
 }

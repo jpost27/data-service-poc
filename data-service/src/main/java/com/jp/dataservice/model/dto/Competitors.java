@@ -38,6 +38,8 @@ public class Competitors {
 
     private Leagues leagues;
 
+    private List<CompetitorsEvents> competitorsEvents;
+
     private List<SportPositions> sportPositions;
 
     private CompetitorProviderIds competitorProviderIds;
@@ -176,6 +178,14 @@ public class Competitors {
 
     public void setLeagues(Leagues leagues) {
         this.leagues = leagues;
+    }
+
+    public List<CompetitorsEvents> getCompetitorsEvents() {
+        return competitorsEvents;
+    }
+
+    public void setCompetitorsEvents(List<CompetitorsEvents> competitorsEvents) {
+        this.competitorsEvents = competitorsEvents;
     }
 
     public List<SportPositions> getSportPositions() {

@@ -103,7 +103,8 @@ public class JPAEntityGenerator extends SqlTableFileGenerator {
 
     private Optional<TypeSpec> createEntityIdClass(Table table, TypeSpec.Builder entityClass) {
         TypeSpec.Builder entityIdClass = null;
-        if (table.getPrimaryKey().getConstrainedColumns().size() > 1) {
+        if (table.getPrimaryKey() != null
+                && table.getPrimaryKey().getConstrainedColumns().size() > 1) {
             entityClass.addAnnotation(AnnotationSpec.builder(jakarta.persistence.IdClass.class)
                     .addMember("value", "$T.class", TypeVariableName.get(transformTableName(table.getName()) + "Id"))
                     .build());

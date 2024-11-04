@@ -1,3 +1,4 @@
+import { Events } from './Events';
 import { Teams } from './Teams';
 export interface Venues {
     venueId: number;
@@ -12,5 +13,6 @@ export interface Venues {
     state?: string;
     surface?: string;
     zip?: string;
+    events?: Events[];
     teams?: Teams[];
 }

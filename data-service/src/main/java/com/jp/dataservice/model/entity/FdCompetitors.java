@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import java.sql.Date;
@@ -95,6 +96,11 @@ public class FdCompetitors {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdLeagues fdLeagues;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdCompetitors")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdCompetitorsEvents> fdCompetitorsEvents;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -245,6 +251,14 @@ public class FdCompetitors {
 
     public void setFdLeagues(FdLeagues fdLeagues) {
         this.fdLeagues = fdLeagues;
+    }
+
+    public List<FdCompetitorsEvents> getFdCompetitorsEvents() {
+        return fdCompetitorsEvents;
+    }
+
+    public void setFdCompetitorsEvents(List<FdCompetitorsEvents> fdCompetitorsEvents) {
+        this.fdCompetitorsEvents = fdCompetitorsEvents;
     }
 
     public List<FdSportPositions> getFdSportPositions() {

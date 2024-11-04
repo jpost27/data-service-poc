@@ -1,44 +1,33 @@
 package com.jp.dataservice.model.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Seasons {
-    private Integer leagueId;
-
-    private String seasonTypeCode;
-
-    private Integer year;
+    private Integer seasonId;
 
     private Date endDate;
 
     private Date startDate;
 
+    private Integer year;
+
+    private Integer leagueId;
+
+    private String seasonTypeCode;
+
     private Leagues leagues;
 
     private SeasonTypes seasonTypes;
 
-    public Integer getLeagueId() {
-        return leagueId;
+    private List<Events> events;
+
+    public Integer getSeasonId() {
+        return seasonId;
     }
 
-    public void setLeagueId(Integer leagueId) {
-        this.leagueId = leagueId;
-    }
-
-    public String getSeasonTypeCode() {
-        return seasonTypeCode;
-    }
-
-    public void setSeasonTypeCode(String seasonTypeCode) {
-        this.seasonTypeCode = seasonTypeCode;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setSeasonId(Integer seasonId) {
+        this.seasonId = seasonId;
     }
 
     public Date getEndDate() {
@@ -57,6 +46,30 @@ public class Seasons {
         this.startDate = startDate;
     }
 
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getLeagueId() {
+        return leagueId;
+    }
+
+    public void setLeagueId(Integer leagueId) {
+        this.leagueId = leagueId;
+    }
+
+    public String getSeasonTypeCode() {
+        return seasonTypeCode;
+    }
+
+    public void setSeasonTypeCode(String seasonTypeCode) {
+        this.seasonTypeCode = seasonTypeCode;
+    }
+
     public Leagues getLeagues() {
         return leagues;
     }
@@ -71,5 +84,13 @@ public class Seasons {
 
     public void setSeasonTypes(SeasonTypes seasonTypes) {
         this.seasonTypes = seasonTypes;
+    }
+
+    public List<Events> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Events> events) {
+        this.events = events;
     }
 }

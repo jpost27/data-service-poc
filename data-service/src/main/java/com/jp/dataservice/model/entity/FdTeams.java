@@ -71,10 +71,26 @@ public class FdTeams {
     @EqualsAndHashCode.Exclude
     private List<FdCompetitors> fdCompetitors;
 
+    //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
+    //    @ToString.Exclude
+    //    @EqualsAndHashCode.Exclude
+    //    private List<FdEvents> fdEvents;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdCompetitorsEvents> fdCompetitorsEvents;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdTeamColors> fdTeamColors;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdTeams", optional = false)
+    @PrimaryKeyJoinColumn
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private FdTeamProviderIds fdTeamProviderIds;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -84,12 +100,6 @@ public class FdTeams {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<FdTeamAssociations> fdTeamAssociations;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdTeams", optional = false)
-    @PrimaryKeyJoinColumn
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private FdTeamProviderIds fdTeamProviderIds;
 
     public Integer getTeamId() {
         return teamId;
@@ -179,6 +189,22 @@ public class FdTeams {
         this.fdCompetitors = fdCompetitors;
     }
 
+    //    public List<FdEvents> getFdEvents() {
+    //        return fdEvents;
+    //    }
+    //
+    //    public void setFdEvents(List<FdEvents> fdEvents) {
+    //        this.fdEvents = fdEvents;
+    //    }
+
+    public List<FdCompetitorsEvents> getFdCompetitorsEvents() {
+        return fdCompetitorsEvents;
+    }
+
+    public void setFdCompetitorsEvents(List<FdCompetitorsEvents> fdCompetitorsEvents) {
+        this.fdCompetitorsEvents = fdCompetitorsEvents;
+    }
+
     public List<FdTeamColors> getFdTeamColors() {
         return fdTeamColors;
     }
@@ -187,19 +213,19 @@ public class FdTeams {
         this.fdTeamColors = fdTeamColors;
     }
 
-    public List<FdTeamAssociations> getFdTeamAssociations() {
-        return fdTeamAssociations;
-    }
-
-    public void setFdTeamAssociations(List<FdTeamAssociations> fdTeamAssociations) {
-        this.fdTeamAssociations = fdTeamAssociations;
-    }
-
     public FdTeamProviderIds getFdTeamProviderIds() {
         return fdTeamProviderIds;
     }
 
     public void setFdTeamProviderIds(FdTeamProviderIds fdTeamProviderIds) {
         this.fdTeamProviderIds = fdTeamProviderIds;
+    }
+
+    public List<FdTeamAssociations> getFdTeamAssociations() {
+        return fdTeamAssociations;
+    }
+
+    public void setFdTeamAssociations(List<FdTeamAssociations> fdTeamAssociations) {
+        this.fdTeamAssociations = fdTeamAssociations;
     }
 }

@@ -25,11 +25,15 @@ public class Teams {
 
     private List<Competitors> competitors;
 
+    private List<Events> events;
+
+    private List<CompetitorsEvents> competitorsEvents;
+
     private List<TeamColors> teamColors;
 
-    private List<TeamAssociations> teamAssociations;
-
     private TeamProviderIds teamProviderIds;
+
+    private List<TeamAssociations> teamAssociations;
 
     public Integer getTeamId() {
         return teamId;
@@ -119,6 +123,22 @@ public class Teams {
         this.competitors = competitors;
     }
 
+    public List<Events> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Events> events) {
+        this.events = events;
+    }
+
+    public List<CompetitorsEvents> getCompetitorsEvents() {
+        return competitorsEvents;
+    }
+
+    public void setCompetitorsEvents(List<CompetitorsEvents> competitorsEvents) {
+        this.competitorsEvents = competitorsEvents;
+    }
+
     public List<TeamColors> getTeamColors() {
         return teamColors;
     }
@@ -127,19 +147,19 @@ public class Teams {
         this.teamColors = teamColors;
     }
 
-    public List<TeamAssociations> getTeamAssociations() {
-        return teamAssociations;
-    }
-
-    public void setTeamAssociations(List<TeamAssociations> teamAssociations) {
-        this.teamAssociations = teamAssociations;
-    }
-
     public TeamProviderIds getTeamProviderIds() {
         return teamProviderIds;
     }
 
     public void setTeamProviderIds(TeamProviderIds teamProviderIds) {
         this.teamProviderIds = teamProviderIds;
+    }
+
+    public List<TeamAssociations> getTeamAssociations() {
+        return teamAssociations;
+    }
+
+    public void setTeamAssociations(List<TeamAssociations> teamAssociations) {
+        this.teamAssociations = teamAssociations;
     }
 }

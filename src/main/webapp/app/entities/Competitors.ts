@@ -2,6 +2,7 @@ import { SportPositions } from './SportPositions';
 import { InjuryStatuses } from './InjuryStatuses';
 import { CompetitorProviderIds } from './CompetitorProviderIds';
 import { Teams } from './Teams';
+import { CompetitorsEvents } from './CompetitorsEvents';
 import { CompetitorStatuses } from './CompetitorStatuses';
 import { Leagues } from './Leagues';
 export interface Competitors {
@@ -22,6 +23,7 @@ export interface Competitors {
     competitorStatuses?: CompetitorStatuses;
     injuryStatuses?: InjuryStatuses;
     leagues?: Leagues;
+    competitorsEvents?: CompetitorsEvents[];
     sportPositions?: SportPositions[];
     competitorProviderIds?: CompetitorProviderIds;
 }

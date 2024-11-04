@@ -59,6 +59,9 @@ public class EntityDtoMapper {
             try {
                 Method entityGetMethod = entity.getClass().getMethod("get" + nameToEntityName(key));
                 Object entityResponse = entityGetMethod.invoke(entity);
+                if (entityResponse == null) {
+                    return;
+                }
                 Method dtoGetMethod = Arrays.stream(dto.getClass().getDeclaredMethods())
                         .filter(method -> method.getName().equals("get" + nameToDtoName(key)))
                         .findFirst()

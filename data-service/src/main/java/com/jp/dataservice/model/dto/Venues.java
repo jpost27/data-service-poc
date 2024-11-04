@@ -28,6 +28,8 @@ public class Venues {
 
     private String zip;
 
+    private List<Events> events;
+
     private List<Teams> teams;
 
     public Integer getVenueId() {
@@ -124,6 +126,14 @@ public class Venues {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    public List<Events> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Events> events) {
+        this.events = events;
     }
 
     public List<Teams> getTeams() {

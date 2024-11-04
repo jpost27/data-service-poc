@@ -69,6 +69,11 @@ public class FdVenues {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdVenues")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    private List<FdEvents> fdEvents;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdVenues")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<FdTeams> fdTeams;
 
     public Integer getVenueId() {
@@ -165,6 +170,14 @@ public class FdVenues {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    public List<FdEvents> getFdEvents() {
+        return fdEvents;
+    }
+
+    public void setFdEvents(List<FdEvents> fdEvents) {
+        this.fdEvents = fdEvents;
     }
 
     public List<FdTeams> getFdTeams() {
