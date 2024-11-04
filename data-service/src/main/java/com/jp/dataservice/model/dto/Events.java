@@ -6,25 +6,25 @@ import java.util.List;
 public class Events {
     private Integer eventId;
 
+    private Integer awayTeamId;
+
+    private Integer awayTeamScore;
+
+    private Integer homeTeamId;
+
+    private Integer homeTeamScore;
+
+    private Integer seasonId;
+
+    private Integer sequence;
+
+    private Integer venueId;
+
     private Timestamp scheduledTime;
 
     private String eventStatusCode;
 
-    private Integer seasonId;
-
-    private Integer awayTeamScore;
-
     private String eventTitle;
-
-    private Integer homeTeamScore;
-
-    private Integer sequence;
-
-    private Integer awayTeamId;
-
-    private Integer homeTeamId;
-
-    private Integer venueId;
 
     private Seasons seasons;
 
@@ -50,6 +50,62 @@ public class Events {
         this.eventId = eventId;
     }
 
+    public Integer getAwayTeamId() {
+        return awayTeamId;
+    }
+
+    public void setAwayTeamId(Integer awayTeamId) {
+        this.awayTeamId = awayTeamId;
+    }
+
+    public Integer getAwayTeamScore() {
+        return awayTeamScore;
+    }
+
+    public void setAwayTeamScore(Integer awayTeamScore) {
+        this.awayTeamScore = awayTeamScore;
+    }
+
+    public Integer getHomeTeamId() {
+        return homeTeamId;
+    }
+
+    public void setHomeTeamId(Integer homeTeamId) {
+        this.homeTeamId = homeTeamId;
+    }
+
+    public Integer getHomeTeamScore() {
+        return homeTeamScore;
+    }
+
+    public void setHomeTeamScore(Integer homeTeamScore) {
+        this.homeTeamScore = homeTeamScore;
+    }
+
+    public Integer getSeasonId() {
+        return seasonId;
+    }
+
+    public void setSeasonId(Integer seasonId) {
+        this.seasonId = seasonId;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
+
+    public Integer getVenueId() {
+        return venueId;
+    }
+
+    public void setVenueId(Integer venueId) {
+        this.venueId = venueId;
+    }
+
     public Timestamp getScheduledTime() {
         return scheduledTime;
     }
@@ -66,68 +122,12 @@ public class Events {
         this.eventStatusCode = eventStatusCode;
     }
 
-    public Integer getSeasonId() {
-        return seasonId;
-    }
-
-    public void setSeasonId(Integer seasonId) {
-        this.seasonId = seasonId;
-    }
-
-    public Integer getAwayTeamScore() {
-        return awayTeamScore;
-    }
-
-    public void setAwayTeamScore(Integer awayTeamScore) {
-        this.awayTeamScore = awayTeamScore;
-    }
-
     public String getEventTitle() {
         return eventTitle;
     }
 
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
-    }
-
-    public Integer getHomeTeamScore() {
-        return homeTeamScore;
-    }
-
-    public void setHomeTeamScore(Integer homeTeamScore) {
-        this.homeTeamScore = homeTeamScore;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
-    public Integer getAwayTeamId() {
-        return awayTeamId;
-    }
-
-    public void setAwayTeamId(Integer awayTeamId) {
-        this.awayTeamId = awayTeamId;
-    }
-
-    public Integer getHomeTeamId() {
-        return homeTeamId;
-    }
-
-    public void setHomeTeamId(Integer homeTeamId) {
-        this.homeTeamId = homeTeamId;
-    }
-
-    public Integer getVenueId() {
-        return venueId;
-    }
-
-    public void setVenueId(Integer venueId) {
-        this.venueId = venueId;
     }
 
     public Seasons getSeasons() {

@@ -1,35 +1,36 @@
 package com.jp.dataservice.model.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "competitors_events")
 @ToString
 @EqualsAndHashCode
-@IdClass(FdCompetitorsEventsId.class)
 public class FdCompetitorsEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "competitors_events_id", nullable = false, unique = true)
+    private Integer competitorsEventsId;
+
     @Column(name = "competitor_id", nullable = false, unique = true, insertable = false, updatable = false)
     private Integer competitorId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id", nullable = false, unique = true, insertable = false, updatable = false)
     private Integer eventId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "team_id", nullable = false, unique = true, insertable = false, updatable = false)
+    @Column(name = "team_id", unique = true, insertable = false, updatable = false)
+    @Nullable
     private Integer teamId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,6 +50,19 @@ public class FdCompetitorsEvents {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private FdTeams fdTeams;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdCompetitorsEvents")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<FdCompetitorEventStatistics> fdCompetitorEventStatistics;
+
+    public Integer getCompetitorsEventsId() {
+        return competitorsEventsId;
+    }
+
+    public void setCompetitorsEventsId(Integer competitorsEventsId) {
+        this.competitorsEventsId = competitorsEventsId;
+    }
 
     public Integer getCompetitorId() {
         return competitorId;
@@ -96,5 +110,13 @@ public class FdCompetitorsEvents {
 
     public void setFdTeams(FdTeams fdTeams) {
         this.fdTeams = fdTeams;
+    }
+
+    public List<FdCompetitorEventStatistics> getFdCompetitorEventStatistics() {
+        return fdCompetitorEventStatistics;
+    }
+
+    public void setFdCompetitorEventStatistics(List<FdCompetitorEventStatistics> fdCompetitorEventStatistics) {
+        this.fdCompetitorEventStatistics = fdCompetitorEventStatistics;
     }
 }

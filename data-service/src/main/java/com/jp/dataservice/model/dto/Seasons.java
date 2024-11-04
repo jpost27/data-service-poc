@@ -8,11 +8,11 @@ public class Seasons {
 
     private Date endDate;
 
+    private Integer leagueId;
+
     private Date startDate;
 
     private Integer year;
-
-    private Integer leagueId;
 
     private String seasonTypeCode;
 
@@ -38,6 +38,14 @@ public class Seasons {
         this.endDate = endDate;
     }
 
+    public Integer getLeagueId() {
+        return leagueId;
+    }
+
+    public void setLeagueId(Integer leagueId) {
+        this.leagueId = leagueId;
+    }
+
     public Date getStartDate() {
         return startDate;
     }
@@ -52,14 +60,6 @@ public class Seasons {
 
     public void setYear(Integer year) {
         this.year = year;
-    }
-
-    public Integer getLeagueId() {
-        return leagueId;
-    }
-
-    public void setLeagueId(Integer leagueId) {
-        this.leagueId = leagueId;
     }
 
     public String getSeasonTypeCode() {

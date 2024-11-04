@@ -22,7 +22,7 @@ public class FdEventProviderIds {
     @Column(name = "event_id", nullable = false, unique = true, insertable = false, updatable = false)
     private Integer eventId;
 
-    @Column(name = "fanduel_event_id", unique = true)
+    @Column(name = "fanduel_event_id")
     @Nullable
     private Integer fanduelEventId;
 
@@ -30,13 +30,13 @@ public class FdEventProviderIds {
     @Nullable
     private Integer numberfireEventId;
 
-    @Column(name = "sportradar_event_id", unique = true)
-    @Nullable
-    private String sportradarEventId;
-
     @Column(name = "sportsbook_event_id")
     @Nullable
     private Integer sportsbookEventId;
+
+    @Column(name = "sportradar_event_id")
+    @Nullable
+    private String sportradarEventId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
@@ -69,20 +69,20 @@ public class FdEventProviderIds {
         this.numberfireEventId = numberfireEventId;
     }
 
-    public String getSportradarEventId() {
-        return sportradarEventId;
-    }
-
-    public void setSportradarEventId(String sportradarEventId) {
-        this.sportradarEventId = sportradarEventId;
-    }
-
     public Integer getSportsbookEventId() {
         return sportsbookEventId;
     }
 
     public void setSportsbookEventId(Integer sportsbookEventId) {
         this.sportsbookEventId = sportsbookEventId;
+    }
+
+    public String getSportradarEventId() {
+        return sportradarEventId;
+    }
+
+    public void setSportradarEventId(String sportradarEventId) {
+        this.sportradarEventId = sportradarEventId;
     }
 
     public FdEvents getFdEvents() {

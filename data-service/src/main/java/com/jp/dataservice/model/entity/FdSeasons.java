@@ -28,15 +28,15 @@ public class FdSeasons {
     @Nullable
     private Date endDate;
 
+    @Column(name = "league_id", nullable = false, unique = true, insertable = false, updatable = false)
+    private Integer leagueId;
+
     @Column(name = "start_date")
     @Nullable
     private Date startDate;
 
     @Column(name = "year", nullable = false, unique = true)
     private Integer year;
-
-    @Column(name = "league_id", nullable = false, unique = true, insertable = false, updatable = false)
-    private Integer leagueId;
 
     @Column(name = "season_type_code", nullable = false, unique = true, insertable = false, updatable = false)
     private String seasonTypeCode;
@@ -74,6 +74,14 @@ public class FdSeasons {
         this.endDate = endDate;
     }
 
+    public Integer getLeagueId() {
+        return leagueId;
+    }
+
+    public void setLeagueId(Integer leagueId) {
+        this.leagueId = leagueId;
+    }
+
     public Date getStartDate() {
         return startDate;
     }
@@ -88,14 +96,6 @@ public class FdSeasons {
 
     public void setYear(Integer year) {
         this.year = year;
-    }
-
-    public Integer getLeagueId() {
-        return leagueId;
-    }
-
-    public void setLeagueId(Integer leagueId) {
-        this.leagueId = leagueId;
     }
 
     public String getSeasonTypeCode() {

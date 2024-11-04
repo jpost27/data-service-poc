@@ -28,42 +28,42 @@ public class FdEvents {
     @Column(name = "event_id", nullable = false, unique = true)
     private Integer eventId;
 
+    @Column(name = "away_team_id", insertable = false, updatable = false)
+    @Nullable
+    private Integer awayTeamId;
+
+    @Column(name = "away_team_score")
+    @Nullable
+    private Integer awayTeamScore;
+
+    @Column(name = "home_team_id", insertable = false, updatable = false)
+    @Nullable
+    private Integer homeTeamId;
+
+    @Column(name = "home_team_score")
+    @Nullable
+    private Integer homeTeamScore;
+
+    @Column(name = "season_id", nullable = false, insertable = false, updatable = false)
+    private Integer seasonId;
+
+    @Column(name = "sequence")
+    @Nullable
+    private Integer sequence;
+
+    @Column(name = "venue_id", insertable = false, updatable = false)
+    @Nullable
+    private Integer venueId;
+
     @Column(name = "scheduled_time", nullable = false)
     private Timestamp scheduledTime;
 
     @Column(name = "event_status_code", nullable = false, insertable = false, updatable = false)
     private String eventStatusCode;
 
-    @Column(name = "season_id", nullable = false, insertable = false, updatable = false)
-    private Integer seasonId;
-
-    @Column(name = "away_team_score")
-    @Nullable
-    private Integer awayTeamScore;
-
     @Column(name = "event_title")
     @Nullable
     private String eventTitle;
-
-    @Column(name = "home_team_score")
-    @Nullable
-    private Integer homeTeamScore;
-
-    @Column(name = "sequence")
-    @Nullable
-    private Integer sequence;
-
-    @Column(name = "away_team_id", insertable = false, updatable = false)
-    @Nullable
-    private Integer awayTeamId;
-
-    @Column(name = "home_team_id", insertable = false, updatable = false)
-    @Nullable
-    private Integer homeTeamId;
-
-    @Column(name = "venue_id", insertable = false, updatable = false)
-    @Nullable
-    private Integer venueId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "season_id")
@@ -95,7 +95,7 @@ public class FdEvents {
     @EqualsAndHashCode.Exclude
     private FdVenues fdVenues;
 
-    @OneToOne(mappedBy = "fdEvents", optional = false)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fdEvents", optional = false)
     @PrimaryKeyJoinColumn
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -123,6 +123,62 @@ public class FdEvents {
         this.eventId = eventId;
     }
 
+    public Integer getAwayTeamId() {
+        return awayTeamId;
+    }
+
+    public void setAwayTeamId(Integer awayTeamId) {
+        this.awayTeamId = awayTeamId;
+    }
+
+    public Integer getAwayTeamScore() {
+        return awayTeamScore;
+    }
+
+    public void setAwayTeamScore(Integer awayTeamScore) {
+        this.awayTeamScore = awayTeamScore;
+    }
+
+    public Integer getHomeTeamId() {
+        return homeTeamId;
+    }
+
+    public void setHomeTeamId(Integer homeTeamId) {
+        this.homeTeamId = homeTeamId;
+    }
+
+    public Integer getHomeTeamScore() {
+        return homeTeamScore;
+    }
+
+    public void setHomeTeamScore(Integer homeTeamScore) {
+        this.homeTeamScore = homeTeamScore;
+    }
+
+    public Integer getSeasonId() {
+        return seasonId;
+    }
+
+    public void setSeasonId(Integer seasonId) {
+        this.seasonId = seasonId;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
+
+    public Integer getVenueId() {
+        return venueId;
+    }
+
+    public void setVenueId(Integer venueId) {
+        this.venueId = venueId;
+    }
+
     public Timestamp getScheduledTime() {
         return scheduledTime;
     }
@@ -139,68 +195,12 @@ public class FdEvents {
         this.eventStatusCode = eventStatusCode;
     }
 
-    public Integer getSeasonId() {
-        return seasonId;
-    }
-
-    public void setSeasonId(Integer seasonId) {
-        this.seasonId = seasonId;
-    }
-
-    public Integer getAwayTeamScore() {
-        return awayTeamScore;
-    }
-
-    public void setAwayTeamScore(Integer awayTeamScore) {
-        this.awayTeamScore = awayTeamScore;
-    }
-
     public String getEventTitle() {
         return eventTitle;
     }
 
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
-    }
-
-    public Integer getHomeTeamScore() {
-        return homeTeamScore;
-    }
-
-    public void setHomeTeamScore(Integer homeTeamScore) {
-        this.homeTeamScore = homeTeamScore;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
-    public Integer getAwayTeamId() {
-        return awayTeamId;
-    }
-
-    public void setAwayTeamId(Integer awayTeamId) {
-        this.awayTeamId = awayTeamId;
-    }
-
-    public Integer getHomeTeamId() {
-        return homeTeamId;
-    }
-
-    public void setHomeTeamId(Integer homeTeamId) {
-        this.homeTeamId = homeTeamId;
-    }
-
-    public Integer getVenueId() {
-        return venueId;
-    }
-
-    public void setVenueId(Integer venueId) {
-        this.venueId = venueId;
     }
 
     public FdSeasons getFdSeasons() {

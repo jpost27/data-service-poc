@@ -71,11 +71,6 @@ public class FdTeams {
     @EqualsAndHashCode.Exclude
     private List<FdCompetitors> fdCompetitors;
 
-    //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
-    //    @ToString.Exclude
-    //    @EqualsAndHashCode.Exclude
-    //    private List<FdEvents> fdEvents;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fdTeams")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -188,14 +183,6 @@ public class FdTeams {
     public void setFdCompetitors(List<FdCompetitors> fdCompetitors) {
         this.fdCompetitors = fdCompetitors;
     }
-
-    //    public List<FdEvents> getFdEvents() {
-    //        return fdEvents;
-    //    }
-    //
-    //    public void setFdEvents(List<FdEvents> fdEvents) {
-    //        this.fdEvents = fdEvents;
-    //    }
 
     public List<FdCompetitorsEvents> getFdCompetitorsEvents() {
         return fdCompetitorsEvents;

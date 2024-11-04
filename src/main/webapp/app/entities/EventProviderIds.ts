@@ -3,7 +3,7 @@ export interface EventProviderIds {
     eventId: number;
     fanduelEventId?: number;
     numberfireEventId?: number;
-    sportradarEventId?: string;
     sportsbookEventId?: number;
+    sportradarEventId?: string;
     events?: Events;
 }

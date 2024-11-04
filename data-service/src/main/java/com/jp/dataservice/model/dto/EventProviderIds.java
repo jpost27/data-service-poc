@@ -7,9 +7,9 @@ public class EventProviderIds {
 
     private Integer numberfireEventId;
 
-    private String sportradarEventId;
-
     private Integer sportsbookEventId;
+
+    private String sportradarEventId;
 
     private Events events;
 
@@ -37,20 +37,20 @@ public class EventProviderIds {
         this.numberfireEventId = numberfireEventId;
     }
 
-    public String getSportradarEventId() {
-        return sportradarEventId;
-    }
-
-    public void setSportradarEventId(String sportradarEventId) {
-        this.sportradarEventId = sportradarEventId;
-    }
-
     public Integer getSportsbookEventId() {
         return sportsbookEventId;
     }
 
     public void setSportsbookEventId(Integer sportsbookEventId) {
         this.sportsbookEventId = sportsbookEventId;
+    }
+
+    public String getSportradarEventId() {
+        return sportradarEventId;
+    }
+
+    public void setSportradarEventId(String sportradarEventId) {
+        this.sportradarEventId = sportradarEventId;
     }
 
     public Events getEvents() {
